@@ -43,7 +43,6 @@ class KCG_AI_Content_Processor {
                 'post_modified' => $post->post_modified,
             ];
             
-
             $taxonomies = get_object_taxonomies($post->post_type);
             foreach ($taxonomies as $taxonomy) {
                 $terms = wp_get_post_terms($post->ID, $taxonomy, ['fields' => 'names']);
@@ -74,6 +73,10 @@ class KCG_AI_Content_Processor {
             }
         }
         
+        if ($error_count > 0 && $success_count === 0) {
+            return new WP_Error('processing_failed', 'Could not process any chunks for the post.');
+        }
+
         return [
             'success' => $success_count,
             'errors' => $error_count,
@@ -87,61 +90,53 @@ class KCG_AI_Content_Processor {
     private function prepare_post_content($post) {
         $content = '';
         
-        $content .= $post->post_title . "\n\n";
+        $content .= "Title: " . $post->post_title . "\n\n";
         
-        $content .= wp_strip_all_tags($post->post_content);
+        $post_content = strip_shortcodes($post->post_content);
+        $post_content = wp_strip_all_tags($post_content);
+        $content .= $post_content;
         
         if (!empty($post->post_excerpt)) {
-            $content .= "\n\n" . $post->post_excerpt;
+            $content .= "\n\nExcerpt: " . wp_strip_all_tags($post->post_excerpt);
         }
         
-        $custom_fields = get_post_meta($post->ID);
-        foreach ($custom_fields as $key => $value) {
-            if (substr($key, 0, 1) !== '_' && !is_array($value[0])) {
-                $content .= "\n" . $key . ': ' . $value[0];
+        $taxonomies = ['category', 'post_tag'];
+        foreach ($taxonomies as $taxonomy) {
+            $terms = get_the_terms($post->ID, $taxonomy);
+            if (!empty($terms) && !is_wp_error($terms)) {
+                $term_names = wp_list_pluck($terms, 'name');
+                $content .= "\n\n" . ucfirst($taxonomy) . "s: " . implode(', ', $term_names);
             }
         }
         
-        return $content;
+        return trim($content);
     }
     
     /**
-     * Split content into chunks
+     * Split content into chunks by words
      */
     private function split_into_chunks($content) {
-        $words = explode(' ', $content);
+        $words = preg_split('/\s+/', $content);
         $chunks = [];
         
-        for ($i = 0; $i < count($words); $i += $this->chunk_size) {
-            $chunk = array_slice($words, $i, $this->chunk_size);
-            $chunks[] = implode(' ', $chunk);
+        if (empty($words)) {
+            return [];
+        }
+        
+        $current_chunk = '';
+        foreach($words as $word) {
+            if (str_word_count($current_chunk . ' ' . $word) > $this->chunk_size) {
+                $chunks[] = trim($current_chunk);
+                $current_chunk = $word;
+            } else {
+                $current_chunk .= ' ' . $word;
+            }
+        }
+        
+        if (!empty($current_chunk)) {
+            $chunks[] = trim($current_chunk);
         }
         
         return $chunks;
-    }
-    
-    /**
-     * Process multiple posts
-     */
-    public function process_bulk_posts($post_ids) {
-        $results = [
-            'processed' => 0,
-            'failed' => 0,
-            'details' => []
-        ];
-        
-        foreach ($post_ids as $post_id) {
-            $result = $this->process_post($post_id);
-            
-            if (is_wp_error($result)) {
-                $results['failed']++;
-                $results['details'][$post_id] = $result->get_error_message();
-            } else {
-                $results['processed']++;
-                $results['details'][$post_id] = $result;
-            }
-        }
-        
-        return $results;
     }
 }

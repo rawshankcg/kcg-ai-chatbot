@@ -1,0 +1,25 @@
+.kcg-pagination .page-numbers {
+    font-size: 16px;
+    background: #ddd;
+    /* display: inline-block; */
+    /* padding: 6px; */
+    text-decoration: none;
+    display: inline-block;
+    vertical-align: baseline;
+    min-width: 30px;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 4px;
+    font-size: 16px;
+    line-height: 1.625;
+    text-align: center;
+    border: 1px solid ;
+}
+
+
+
+.kcg-pagination .page-numbers.current {
+    background: #2271b1;
+    color: #fff;
+    border-color: #2271b1;
+}

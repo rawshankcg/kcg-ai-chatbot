@@ -16,7 +16,6 @@ if (isset($_POST['kcg_ai_chatbot_save_settings'])) {
     update_option('kcg_ai_chatbot_instructions', sanitize_textarea_field($_POST['kcg_ai_chatbot_instructions']));
     
     // Knowledge Base Settings
-    update_option('kcg_auto_index_posts', isset($_POST['kcg_auto_index_posts']) ? 1 : 0);
     update_option('kcg_use_knowledge_base', isset($_POST['kcg_use_knowledge_base']) ? 1 : 0);
     update_option('kcg_chunk_size', intval($_POST['kcg_chunk_size']));
     
@@ -46,7 +45,6 @@ $instructions = get_option('kcg_ai_chatbot_instructions', '');
         
         <h2><?php _e('General Settings', 'kaichat'); ?></h2>
         <table class="form-table">
-            <!-- Enable/Disable Chatbot -->
             <tr>
                 <th scope="row">
                     <label for="kcg_ai_chatbot_enabled"><?php _e('Enable Chatbot', 'kaichat'); ?></label>
@@ -61,7 +59,6 @@ $instructions = get_option('kcg_ai_chatbot_instructions', '');
                 </td>
             </tr>
             
-            <!-- Gemini API Key -->
             <tr>
                 <th scope="row">
                     <label for="kcg_ai_chatbot_api_key"><?php _e('Google Gemini API Key', 'kaichat'); ?></label>
@@ -80,7 +77,6 @@ $instructions = get_option('kcg_ai_chatbot_instructions', '');
                 </td>
             </tr>
             
-            <!-- Model Selection -->
             <tr>
                 <th scope="row">
                     <label for="kcg_ai_chatbot_model"><?php _e('AI Model', 'kaichat'); ?></label>
@@ -95,7 +91,6 @@ $instructions = get_option('kcg_ai_chatbot_instructions', '');
                 </td>
             </tr>
             
-            <!-- Max Tokens -->
             <tr>
                 <th scope="row">
                     <label for="kcg_ai_chatbot_max_tokens"><?php _e('Max Tokens', 'kaichat'); ?></label>
@@ -112,7 +107,6 @@ $instructions = get_option('kcg_ai_chatbot_instructions', '');
                 </td>
             </tr>
             
-            <!-- Temperature -->
             <tr>
                 <th scope="row">
                     <label for="kcg_ai_chatbot_temperature"><?php _e('Temperature', 'kaichat'); ?></label>
@@ -129,7 +123,6 @@ $instructions = get_option('kcg_ai_chatbot_instructions', '');
                 </td>
             </tr>
             
-            <!-- Welcome Message -->
             <tr>
                 <th scope="row">
                     <label for="kcg_ai_chatbot_welcome_message"><?php _e('Welcome Message', 'kaichat'); ?></label>
@@ -143,7 +136,6 @@ $instructions = get_option('kcg_ai_chatbot_instructions', '');
                 </td>
             </tr>
             
-            <!-- Custom Instructions -->
             <tr>
                 <th scope="row">
                     <label for="kcg_ai_chatbot_instructions"><?php _e('Custom Instructions', 'kaichat'); ?></label>
@@ -167,12 +159,6 @@ $instructions = get_option('kcg_ai_chatbot_instructions', '');
                 <th scope="row"><?php _e('Knowledge Base Options', 'kaichat'); ?></th>
                 <td>
                     <fieldset>
-                        <label>
-                            <input type="checkbox" name="kcg_auto_index_posts" value="1" 
-                                <?php checked(get_option('kcg_auto_index_posts', 0)); ?>>
-                            <?php _e('Automatically index new posts when published', 'kaichat'); ?>
-                        </label><br>
-                        
                         <label>
                             <input type="checkbox" name="kcg_use_knowledge_base" value="1" 
                                 <?php checked(get_option('kcg_use_knowledge_base', 1)); ?>>
@@ -211,7 +197,6 @@ $instructions = get_option('kcg_ai_chatbot_instructions', '');
         <?php submit_button(__('Save Settings', 'kaichat'), 'primary', 'kcg_ai_chatbot_save_settings'); ?>
     </form>
     
-    <!-- Test Connection Section -->
     <hr>
     <h2><?php _e('Test API Connection', 'kaichat'); ?></h2>
     <p>
@@ -221,28 +206,3 @@ $instructions = get_option('kcg_ai_chatbot_instructions', '');
         <span id="test-result" style="margin-left: 10px;"></span>
     </p>
 </div>
-
-<script>
-jQuery(document).ready(function($) {
-    $('#test-api-connection').on('click', function() {
-        var button = $(this);
-        var resultSpan = $('#test-result');
-        
-        button.prop('disabled', true);
-        resultSpan.html('<span style="color: #666;">Testing connection...</span>');
-        
-        $.post(ajaxurl, {
-            action: 'kcg_test_gemini_connection',
-            nonce: '<?php echo wp_create_nonce('kcg_ai_chatbot_admin_nonce'); ?>'
-        }, function(response) {
-            button.prop('disabled', false);
-            
-            if (response.success) {
-                resultSpan.html('<span style="color: green;">✓ Connection successful!</span>');
-            } else {
-                resultSpan.html('<span style="color: red;">✗ Connection failed: ' + response.data + '</span>');
-            }
-        });
-    });
-});
-</script>

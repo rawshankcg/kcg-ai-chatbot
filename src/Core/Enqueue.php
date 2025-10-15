@@ -51,12 +51,15 @@ class KCG_AI_Chatbot_Enqueue {
         wp_localize_script('kcg-ai-chatbot-admin', 'kcgAiChatbotAdmin', array(
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('kcg_ai_chatbot_admin_nonce'),
+            // ADDED: A specific nonce for the single post processing action
+            'processSingleNonce' => wp_create_nonce('kcg_process_single'), 
             'strings' => array(
                 'saved' => __('Settings saved successfully!', 'kaichat'),
                 'error' => __('An error occurred. Please try again.', 'kaichat'),
                 'testing' => __('Testing connection...', 'kaichat'),
                 'success' => __('Connection successful!', 'kaichat'),
                 'failed' => __('Connection failed!', 'kaichat'),
+                'processing' => __('Processing...', 'kaichat'),
             )
         ));
     }
