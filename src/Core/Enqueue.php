@@ -81,6 +81,16 @@ class KCG_AI_Chatbot_Enqueue {
             array(),
             KCG_AI_CHATBOT_VERSION
         );
+
+        $custom_css_path = KCG_AI_CHATBOT_PLUGIN_DIR . 'assets/css/kcg-ai-chatbot-custom-colors.css';
+        if (file_exists($custom_css_path)) {
+            wp_enqueue_style(
+                'kcg-ai-chatbot-custom-colors',
+                KCG_AI_CHATBOT_PLUGIN_URL . 'assets/css/kcg-ai-chatbot-custom-colors.css',
+                array('kcg-ai-chatbot-widget'),
+                get_option('kcg_ai_chatbot_css_version', KCG_AI_CHATBOT_VERSION)
+            );
+        }
         
         // Frontend JS
         wp_enqueue_script(

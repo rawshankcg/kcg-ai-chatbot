@@ -45,11 +45,17 @@ class KCG_AI_Chatbot_Menu {
                 <a href="?page=kcg-ai-chatbot&tab=conversations" class="nav-tab <?php echo $active_tab === 'conversations' ? 'nav-tab-active' : ''; ?>">
                     <?php _e('Conversations', 'kaichat'); ?>
                 </a>
+                <a href="?page=kcg-ai-chatbot&tab=design" class="nav-tab <?php echo $active_tab === 'design' ? 'nav-tab-active' : ''; ?>">
+                    <?php _e('Chatbot Design', 'kaichat'); ?>
+                </a>
             </h2>
 
             <div class="kcg-chatbot-tab-content">
                 <?php
                 switch ($active_tab) {
+                    case 'design':
+                        require_once KCG_AI_CHATBOT_PLUGIN_DIR . 'templates/admin/design-page.php';
+                        break;
                     case 'knowledge':
                         require_once KCG_AI_CHATBOT_PLUGIN_DIR . 'templates/admin/knowledge-page.php';
                         break;

@@ -121,7 +121,12 @@ class KCG_AI_Gemini_Handler {
         $data = json_decode($body, true);
         
         if (isset($data['candidates'][0]['content']['parts'][0]['text'])) {
-            return $data['candidates'][0]['content']['parts'][0]['text'];
+            return [
+                'text' => $data['candidates'][0]['content']['parts'][0]['text'],
+                'tokens_used' => $data['usageMetadata']['totalTokenCount'] ?? 0,
+                'prompt_tokens' => $data['usageMetadata']['promptTokenCount'] ?? 0,
+                'completion_tokens' => $data['usageMetadata']['candidatesTokenCount'] ?? 0
+            ];
         }
         
         if (isset($data['error'])) {

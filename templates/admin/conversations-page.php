@@ -85,6 +85,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
                             } else {
                                 echo '<em>' . __('Guest', 'kaichat') . '</em>';
                             }
+
+                            if ($conversation->tokens_used) {
+                                echo '<br><small style="color: #555;">' . sprintf(__('Tokens: %d', 'kaichat'), intval($conversation->tokens_used)) . '</small>';
+                            }
                             ?>
                         </td>
                         <td><?php echo esc_html($conversation->user_message); ?></td>

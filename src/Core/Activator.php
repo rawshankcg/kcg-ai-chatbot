@@ -76,5 +76,25 @@ class KCG_AI_Chatbot_Activator {
                 add_option($key, $value);
             }
         }
+
+        // Design settings
+        $design_defaults = [
+            'kcg_ai_chatbot_header_bg_color' => '#667eea',
+            'kcg_ai_chatbot_header_text_color' => '#ffffff',
+            'kcg_ai_chatbot_user_msg_bg_color' => '#667eea',
+            'kcg_ai_chatbot_user_msg_text_color' => '#ffffff',
+            'kcg_ai_chatbot_bot_msg_bg_color' => '#ffffff',
+            'kcg_ai_chatbot_bot_msg_text_color' => '#1f2937',
+            'kcg_ai_chatbot_button_bg_color' => '#4F46E5',
+            'kcg_ai_chatbot_button_text_color' => '#ffffff',
+            'kcg_ai_chatbot_design_updated' => time(),
+            'kcg_ai_chatbot_css_version' => time()
+        ];
+        
+        foreach ($design_defaults as $key => $value) {
+            if (get_option($key) === false) {
+                add_option($key, $value);
+            }
+        }
     }
 }

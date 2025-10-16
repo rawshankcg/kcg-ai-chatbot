@@ -1,0 +1,43 @@
+/* KCG AI Chatbot - Custom Colors */
+
+.kcg-chatbot-header {
+    background: #0a0003 !important;
+    color: #ffffff !important;
+}
+
+.kcg-chatbot-title h3 {
+    color: #ffffff !important;
+}
+
+.kcg-bot-message .kcg-message-avatar {
+    background: #ff0088 !important;
+    color: #0a0a0a !important;
+}
+
+.kcg-user-message .kcg-message-avatar {
+    background: #19f704 !important;
+    color: #ff543a !important;
+}
+
+.kcg-chatbot-button {
+    background: #1d00ff !important;
+}
+
+.kcg-chatbot-button svg {
+    color: #ffffff !important;
+}
+
+.kcg-chatbot-send-btn {
+    background: #1d00ff !important;
+    color: #ffffff !important;
+}
+
+.kcg-user-message .kcg-message-bubble {
+    background: #19f704 !important;
+    color: #ff543a !important;
+}
+
+.kcg-bot-message .kcg-message-bubble {
+    background: #ff0088 !important;
+    color: #0a0a0a !important;
+}
