@@ -14,7 +14,7 @@ $post_types = get_post_types(['public' => true], 'objects');
 $per_page = 10;
 $current_page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
 
-$selected_post_type = isset($_GET['post_type']) ? sanitize_text_field($_GET['post_type']) : 'post';
+$selected_post_type = isset($_GET['post_type']) ? sanitize_text_field($_GET['post_type']) : 'page';
 
 $args = [
     'post_type' => $selected_post_type,
@@ -48,15 +48,49 @@ if ($query->have_posts()) {
 <div class="wrap">
     <h1><?php _e('Knowledge Base Management', 'kaichat'); ?></h1>
 
-    <div class="kcg-stats-cards" style="display: flex; gap: 20px; margin: 20px 0;">
-        <div class="card" style="background: white; padding: 20px; border: 1px solid #ddd; border-radius: 8px; flex: 1;">
-            <h3 style="margin-top: 0;"><?php _e('Total Vectors', 'kaichat'); ?></h3>
-            <p style="font-size: 24px; font-weight: bold; color: #667eea;"><?php echo number_format($total_vectors); ?></p>
+    <div class="kcg-stats-cards">
+        <div class="kcg-stats-card">
+            <div class="kcg-bulk-actions">
+                <h3><?php _e('Bulk Indexing', 'kaichat'); ?></h3>
+                <p><?php _e('Index all published content at once. This may take several minutes depending on the amount of content.', 'kaichat'); ?></p>
+            
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+                    <button type="button" class="button button-primary kcg-process-all-posts" data-post-types='["post"]'>
+                        <?php _e('Index All Posts', 'kaichat'); ?>
+                    </button>
+                    
+                    <button type="button" class="button button-primary kcg-process-all-posts" data-post-types='["page"]'>
+                        <?php _e('Index All Pages', 'kaichat'); ?>
+                    </button>
+                    
+                    <?php
+                    $custom_post_types = get_post_types(['public' => true, '_builtin' => false], 'objects');
+                    if (!empty($custom_post_types)) {
+                        foreach ($custom_post_types as $post_type_obj) {
+                            printf(
+                                '<button type="button" class="button button-primary kcg-process-all-posts" data-post-types=\'["%s"]\'>%s</button>',
+                                esc_attr($post_type_obj->name),
+                                sprintf(__('Index All %s', 'kaichat'), esc_html($post_type_obj->labels->name))
+                            );
+                        }
+                    }
+                    ?>
+                </div>
+            
+                <div id="kcg-bulk-progress" style="margin-top: 15px; display: none;">
+                    <div style="background: #f0f0f1; border-radius: 4px; padding: 10px;">
+                        <div style="font-weight: bold; margin-bottom: 5px;"><?php _e('Processing...', 'kaichat'); ?></div>
+                        <div id="kcg-bulk-status"><?php _e('Initializing...', 'kaichat'); ?></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card" style="background: white; padding: 20px; border: 1px solid #ddd; border-radius: 8px; flex: 1;">
-            <h3 style="margin-top: 0;"><?php _e('Posts Indexed', 'kaichat'); ?></h3>
+
+        <div class="kcg-stats-card">
+            <h3 style="margin-top: 0;"><?php _e('All Indexed', 'kaichat'); ?></h3>
             <p style="font-size: 24px; font-weight: bold; color: #764ba2;"><?php echo number_format($total_posts_indexed); ?></p>
         </div>
+        
     </div>
 
     <form method="get">
@@ -85,7 +119,7 @@ if ($query->have_posts()) {
                 <th style="width: 120px;"><?php _e('Type', 'kaichat'); ?></th>
                 <th style="width: 120px;"><?php _e('Status', 'kaichat'); ?></th>
                 <th style="width: 150px;"><?php _e('Last Modified', 'kaichat'); ?></th>
-                <th style="width: 120px;"><?php _e('Actions', 'kaichat'); ?></th>
+                <th style="width: 150px;"><?php _e('Actions', 'kaichat'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -112,9 +146,15 @@ if ($query->have_posts()) {
                             <?php endif; ?>
                         </td>
                         <td><?php echo get_the_modified_date(); ?></td>
-                        <td>
+                        <td style="display: flex; gap: 5px; align-items: center; flex-wrap: wrap;">
                             <button type="button" class="button button-small kcg-process-single" data-post-id="<?php echo $post_id; ?>">
                                 <?php echo $is_indexed ? __('Re-index', 'kaichat') : __('Index', 'kaichat'); ?>
+                            </button>
+                            <button type="button" class="button button-small kcg-unindex-single <?php echo !$is_indexed ? 'disabled' : ''; ?>" 
+                                    data-post-id="<?php echo $post_id; ?>" 
+                                    style="background: #dc3232; color: white; border-color: #dc3232;" 
+                                    <?php echo !$is_indexed ? 'disabled' : ''; ?>>
+                                <?php _e('Unindex', 'kaichat'); ?>
                             </button>
                         </td>
                     </tr>

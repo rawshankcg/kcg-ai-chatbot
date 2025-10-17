@@ -147,4 +147,23 @@ class KCG_AI_Vector_Model {
             ['%s']
         );
     }
+
+    /**
+     * Delete vectors by post ID
+     */
+    public function delete_by_post($post_id) {
+        return $this->delete_by_source('post', $post_id);
+    }
+
+    /**
+     * Get vector count by post ID
+     */
+    public function get_vector_count_by_post($post_id) {
+        global $wpdb;
+        
+        return $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$this->table_name} WHERE source = 'post' AND source_id = %d",
+            $post_id
+        ));
+    }
 }

@@ -17,9 +17,54 @@
 }
 
 
+/* Unindex  */
+
+.kcg-unindex-single.disabled {
+    background: #f0f0f1 !important;
+    color: #a7aaad !important;
+    border-color: #dcdcde !important;
+    cursor: not-allowed !important;
+}
+
+.kcg-unindex-single:not(.disabled):hover {
+    background: #b91c1c !important;
+    border-color: #b91c1c !important;
+}
+
+.kcg-actions-container {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.kcg-success-message {
+    color: #10b981;
+    font-size: 12px;
+    margin-top: 2px;
+    animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
 
 .kcg-pagination .page-numbers.current {
     background: #2271b1;
     color: #fff;
     border-color: #2271b1;
+}
+
+/* Knowledge Base Tab  */
+.kcg-stats-cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.kcg-stats-card {
+    background: white; padding: 20px; border: 1px solid #ddd; border-radius: 8px; flex: 1;
 }

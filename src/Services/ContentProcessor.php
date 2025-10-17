@@ -13,6 +13,45 @@ class KCG_AI_Content_Processor {
         $this->gemini_handler = new KCG_AI_Gemini_Handler();
         $this->vector_model = new KCG_AI_Vector_Model();
     }
+
+    /**
+     * Process all pages
+     */
+    /**
+ * Process all posts of given post types
+ */
+    public function process_all_posts($post_types = ['post', 'page']) {
+        $results = [
+            'total_posts' => 0,
+            'successful' => 0,
+            'failed' => 0,
+            'errors' => []
+        ];
+        
+        foreach ($post_types as $post_type) {
+            $posts = get_posts([
+                'post_type' => $post_type,
+                'post_status' => 'publish',
+                'numberposts' => -1,
+                'fields' => 'ids'
+            ]);
+            
+            $results['total_posts'] += count($posts);
+            
+            foreach ($posts as $post_id) {
+                $result = $this->process_post($post_id);
+                
+                if (is_wp_error($result)) {
+                    $results['failed']++;
+                    $results['errors'][] = "Post ID {$post_id}: " . $result->get_error_message();
+                } else {
+                    $results['successful']++;
+                }
+            }
+        }
+        
+        return $results;
+    }
     
     /**
      * Process a WordPress post/page
@@ -138,5 +177,28 @@ class KCG_AI_Content_Processor {
         }
         
         return $chunks;
+    }
+
+    /**
+     * Unindex a WordPress post/page
+     */
+    public function unindex_post($post_id) {
+        $post = get_post($post_id);
+        
+        if (!$post) {
+            return new WP_Error('post_not_found', 'Post not found');
+        }
+        
+        $deleted_count = $this->vector_model->delete_by_post($post_id);
+        
+        if ($deleted_count === false) {
+            return new WP_Error('unindex_failed', 'Failed to remove vectors from database');
+        }
+        
+        return [
+            'success' => true,
+            'deleted_vectors' => $deleted_count,
+            'post_title' => $post->post_title
+        ];
     }
 }
