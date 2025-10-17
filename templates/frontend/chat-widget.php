@@ -4,6 +4,8 @@ if (!defined('ABSPATH')) {
 }
 
 $welcome_message = get_option('kcg_ai_chatbot_welcome_message', 'Hello! How can I help you today?');
+$avatar_url = get_option('kcg_ai_chatbot_assistant_avatar', '');
+$icon_url = get_option('kcg_ai_chatbot_button_icon', '');
 ?>
 
 <!-- KCG AI Chatbot Widget -->
@@ -11,9 +13,15 @@ $welcome_message = get_option('kcg_ai_chatbot_welcome_message', 'Hello! How can 
     
     <!-- Chat Button (Floating) -->
     <div id="kcg-chatbot-button" class="kcg-chatbot-button">
+        <?php
+        if ($icon_url) : ?>
+            <img src="<?php echo esc_url($icon_url); ?>" alt="<?php esc_attr_e('Chat Button Icon', 'kaichat'); ?>" />
+        <?php else :
+        ?>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
+        <?php endif; ?>
     </div>
     
     <!-- Chat Window -->
@@ -23,12 +31,18 @@ $welcome_message = get_option('kcg_ai_chatbot_welcome_message', 'Hello! How can 
         <div class="kcg-chatbot-header">
             <div class="kcg-chatbot-header-content">
                 <div class="kcg-chatbot-avatar">
+                    <?php 
+                    if ($avatar_url) : ?>
+                        <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php esc_attr_e('Assistant Avatar', 'kaichat'); ?>" />
+                    <?php else :
+                    ?>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"></circle>
                         <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
                         <line x1="9" y1="9" x2="9.01" y2="9"></line>
                         <line x1="15" y1="9" x2="15.01" y2="9"></line>
                     </svg>
+                    <?php endif; ?>
                 </div>
                 <div class="kcg-chatbot-title">
                     <h3><?php _e('AI Assistant', 'kaichat'); ?></h3>
@@ -51,12 +65,18 @@ $welcome_message = get_option('kcg_ai_chatbot_welcome_message', 'Hello! How can 
             <!-- Welcome Message -->
             <div class="kcg-chat-message kcg-bot-message">
                 <div class="kcg-message-avatar">
+                    <?php 
+                    if ($avatar_url) : ?>
+                        <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php esc_attr_e('Assistant Avatar', 'kaichat'); ?>" />
+                    <?php else :
+                    ?>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"></circle>
                         <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
                         <line x1="9" y1="9" x2="9.01" y2="9"></line>
                         <line x1="15" y1="9" x2="15.01" y2="9"></line>
                     </svg>
+                    <?php endif; ?>
                 </div>
                 <div class="kcg-message-content">
                     <div class="kcg-message-bubble">
@@ -138,12 +158,18 @@ $welcome_message = get_option('kcg_ai_chatbot_welcome_message', 'Hello! How can 
 <template id="kcg-bot-message-template">
     <div class="kcg-chat-message kcg-bot-message">
         <div class="kcg-message-avatar">
+            <?php 
+            if ($avatar_url) : ?>
+                <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php esc_attr_e('Assistant Avatar', 'kaichat'); ?>" />
+            <?php else :
+            ?>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"></circle>
                 <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
                 <line x1="9" y1="9" x2="9.01" y2="9"></line>
                 <line x1="15" y1="9" x2="15.01" y2="9"></line>
             </svg>
+            <?php endif; ?>
         </div>
         <div class="kcg-message-content">
             <div class="kcg-message-bubble"></div>

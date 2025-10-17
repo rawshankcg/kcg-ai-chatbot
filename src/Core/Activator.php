@@ -87,6 +87,8 @@ class KCG_AI_Chatbot_Activator {
             'kcg_ai_chatbot_bot_msg_text_color' => '#1f2937',
             'kcg_ai_chatbot_button_bg_color' => '#4F46E5',
             'kcg_ai_chatbot_button_text_color' => '#ffffff',
+            'kcg_ai_chatbot_assistant_avatar' => '',
+            'kcg_ai_chatbot_button_icon' => '',
             'kcg_ai_chatbot_design_updated' => time(),
             'kcg_ai_chatbot_css_version' => time()
         ];

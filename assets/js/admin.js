@@ -29,9 +29,19 @@
       var buttonBg = $('#kcg_ai_chatbot_button_bg_color').val();
       var buttonText = $('#kcg_ai_chatbot_button_text_color').val();
 
+      var assistantAvatar = $('#kcg_ai_chatbot_assistant_avatar').val();
+      var buttonIcon = $('#kcg_ai_chatbot_button_icon').val();
+
       // Header
       $('.preview-header').css('background', headerBg);
       $('.preview-header').css('color', headerText);
+
+      if (assistantAvatar) {
+        $('.preview-assistant-avatar').html('<img src="' + assistantAvatar + '" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" alt="AI Assistant">');
+      } else {
+        $('.preview-assistant-avatar').html('<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>');
+        $('.preview-assistant-avatar').css('background', 'rgba(255,255,255,0.2)');
+      }
 
       // User Message and related elements
       $('.preview-user-message').css('background', userMsgBg);
@@ -42,12 +52,22 @@
       // Bot Message and related elements
       $('.preview-bot-message').css('background', botMsgBg);
       $('.preview-bot-message').css('color', botMsgText);
-      $('.preview-bot-avatar').css('background', botMsgBg);
-      $('.preview-bot-avatar').css('color', botMsgText);
+      // Update bot avatar
+      if (assistantAvatar) {
+        $('.preview-bot-avatar').html('<img src="' + assistantAvatar + '" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" alt="AI Assistant">');
+      } else {
+        $('.preview-bot-avatar').html('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>');
+        $('.preview-bot-avatar').css('background', botMsgBg);
+        $('.preview-bot-avatar').css('color', botMsgText);
+      }
 
       // Button colors - both chat button and send button
       $('.preview-chat-button').css('background', buttonBg);
-      $('.preview-chat-button svg').attr('stroke', buttonText);
+      if (buttonIcon) {
+        $('.preview-chat-button').html('<img src="' + buttonIcon + '" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" alt="Chat">');
+      } else {
+        $('.preview-chat-button').html('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="' + buttonText + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>');
+      }
       $('.preview-send-button').css('background', buttonBg);
       $('.preview-send-button svg').attr('stroke', buttonText);
     }
@@ -335,6 +355,87 @@
         alert('An unexpected error occurred.');
       });
     });
+
+
+    // Check if we're on a page that needs media uploader
+    if ($('.kcg-upload-image-btn').length > 0) {
+
+      // Make sure wp.media is available
+      if (typeof wp !== 'undefined' && wp.media) {
+
+        $('.kcg-upload-image-btn').on('click', function (e) {
+          e.preventDefault();
+
+          var button = $(this);
+          var fieldId = button.data('field');
+          var field = $('#' + fieldId);
+          var preview = button.closest('.kcg-image-upload-container').find('.kcg-image-preview');
+          var removeBtn = button.siblings('.kcg-remove-image-btn');
+
+          // Create a new media uploader instance
+          var mediaUploader = wp.media({
+            title: 'Choose Image',
+            button: {
+              text: 'Choose Image'
+            },
+            multiple: false,
+            library: {
+              type: 'image'
+            }
+          });
+
+          // When an image is selected, run a callback
+          mediaUploader.on('select', function () {
+            var attachment = mediaUploader.state().get('selection').first().toJSON();
+
+            // Set the field value
+            field.val(attachment.url);
+
+            // Update preview
+            var maxSize = fieldId.includes('button') ? '60px' : '64px';
+            preview.html('<img src="' + attachment.url + '" style="max-width: ' + maxSize + '; max-height: ' + maxSize + '; border-radius: 50%; border: 2px solid #ddd; object-fit: cover;">');
+
+            // Show remove button
+            removeBtn.show();
+
+            // Update design preview if function exists
+            if (typeof updateDesignPreview === 'function') {
+              updateDesignPreview();
+            }
+          });
+
+          // Open the uploader dialog
+          mediaUploader.open();
+        });
+
+      } else {
+        // Fallback if wp.media is not available
+        $('.kcg-upload-image-btn').on('click', function (e) {
+          e.preventDefault();
+          alert('WordPress media library is not available. Please make sure you are on the correct admin page.');
+        });
+      }
+
+      // Remove image functionality
+      $('.kcg-remove-image-btn').on('click', function (e) {
+        e.preventDefault();
+
+        var button = $(this);
+        var fieldId = button.data('field');
+        var field = $('#' + fieldId);
+        var preview = button.closest('.kcg-image-upload-container').find('.kcg-image-preview');
+
+        // Clear field and preview
+        field.val('');
+        preview.empty();
+        button.hide();
+
+        // Update design preview if function exists
+        if (typeof updateDesignPreview === 'function') {
+          updateDesignPreview();
+        }
+      });
+    }
 
 
   });

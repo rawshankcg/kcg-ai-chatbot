@@ -40,6 +40,13 @@
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
+.kcg-chatbot-button img {
+    width: 90%;
+    height: 90%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
 .kcg-chatbot-button svg {
     width: 28px;
     height: 28px;
@@ -126,6 +133,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.kcg-chatbot-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .kcg-chatbot-avatar svg {
@@ -231,6 +245,13 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+}
+
+.kcg-message-avatar img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .kcg-bot-message .kcg-message-avatar {

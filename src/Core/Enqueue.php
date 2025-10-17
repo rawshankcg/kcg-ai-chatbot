@@ -29,6 +29,10 @@ class KCG_AI_Chatbot_Enqueue {
         if (strpos($hook, 'kcg-ai-chatbot') === false) {
             return;
         }
+
+        wp_enqueue_media();
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('wp-color-picker');
         
         // Admin CSS
         wp_enqueue_style(

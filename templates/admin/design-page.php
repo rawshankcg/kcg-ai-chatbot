@@ -16,6 +16,8 @@ if (isset($_POST['kcg_ai_chatbot_save_design']) && current_user_can('manage_opti
         $bot_msg_text = isset($_POST['kcg_ai_chatbot_bot_msg_text_color']) ? sanitize_hex_color($_POST['kcg_ai_chatbot_bot_msg_text_color']) : '';
         $button_bg = isset($_POST['kcg_ai_chatbot_button_bg_color']) ? sanitize_hex_color($_POST['kcg_ai_chatbot_button_bg_color']) : '';
         $button_text = isset($_POST['kcg_ai_chatbot_button_text_color']) ? sanitize_hex_color($_POST['kcg_ai_chatbot_button_text_color']) : '';
+        $assistant_avatar = isset($_POST['kcg_ai_chatbot_assistant_avatar']) ? esc_url_raw($_POST['kcg_ai_chatbot_assistant_avatar']) : '';
+        $button_icon = isset($_POST['kcg_ai_chatbot_button_icon']) ? esc_url_raw($_POST['kcg_ai_chatbot_button_icon']) : '';
         
         // Update options
         update_option('kcg_ai_chatbot_header_bg_color', $header_bg);
@@ -26,6 +28,9 @@ if (isset($_POST['kcg_ai_chatbot_save_design']) && current_user_can('manage_opti
         update_option('kcg_ai_chatbot_bot_msg_text_color', $bot_msg_text);
         update_option('kcg_ai_chatbot_button_bg_color', $button_bg);
         update_option('kcg_ai_chatbot_button_text_color', $button_text);
+
+        update_option('kcg_ai_chatbot_assistant_avatar', $assistant_avatar);
+        update_option('kcg_ai_chatbot_button_icon', $button_icon);
         
         // Update CSS file via the design manager
         if (class_exists('KCG_AI_Chatbot_Design_Manager')) {
@@ -51,10 +56,10 @@ $bot_msg_bg = get_option('kcg_ai_chatbot_bot_msg_bg_color', '#ffffff');
 $bot_msg_text = get_option('kcg_ai_chatbot_bot_msg_text_color', '#1f2937');
 $button_bg = get_option('kcg_ai_chatbot_button_bg_color', '#4F46E5');
 $button_text = get_option('kcg_ai_chatbot_button_text_color', '#ffffff');
+$assistant_avatar = get_option('kcg_ai_chatbot_assistant_avatar', '');
+$button_icon = get_option('kcg_ai_chatbot_button_icon', '');
 
-// Ensure color picker scripts are loaded
-wp_enqueue_style('wp-color-picker');
-wp_enqueue_script('wp-color-picker');
+
 ?>
 
 <div class="wrap">
@@ -160,6 +165,69 @@ wp_enqueue_script('wp-color-picker');
                         </td>
                     </tr>
                 </table>
+
+                <h3><?php _e('Custom Images', 'kaichat'); ?></h3>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">
+                            <label for="kcg_ai_chatbot_assistant_avatar"><?php _e('Assistant Avatar', 'kaichat'); ?></label>
+                        </th>
+                        <td>
+                            <div class="kcg-image-upload-container">
+                                <input type="hidden" name="kcg_ai_chatbot_assistant_avatar" id="kcg_ai_chatbot_assistant_avatar" 
+                                    value="<?php echo esc_attr(get_option('kcg_ai_chatbot_assistant_avatar', '')); ?>">
+                                <div class="kcg-image-preview">
+                                    <?php 
+                                    $assistant_avatar = get_option('kcg_ai_chatbot_assistant_avatar', '');
+                                    if ($assistant_avatar): 
+                                    ?>
+                                        <img src="<?php echo esc_url($assistant_avatar); ?>" style="max-width: 64px; max-height: 64px; border-radius: 50%; border: 2px solid #ddd;">
+                                    <?php endif; ?>
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <button type="button" class="button kcg-upload-image-btn" data-field="kcg_ai_chatbot_assistant_avatar">
+                                        <?php _e('Upload Assistant Avatar', 'kaichat'); ?>
+                                    </button>
+                                    <button type="button" class="button kcg-remove-image-btn" data-field="kcg_ai_chatbot_assistant_avatar" 
+                                            style="<?php echo $assistant_avatar ? '' : 'display: none;'; ?> margin-left: 10px;">
+                                        <?php _e('Remove', 'kaichat'); ?>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="description"><?php _e('Upload a custom avatar image for the AI assistant. Recommended size: 64x64px. This will replace the default robot icon.', 'kaichat'); ?></p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">
+                            <label for="kcg_ai_chatbot_button_icon"><?php _e('Chat Button Icon', 'kaichat'); ?></label>
+                        </th>
+                        <td>
+                            <div class="kcg-image-upload-container">
+                                <input type="hidden" name="kcg_ai_chatbot_button_icon" id="kcg_ai_chatbot_button_icon" 
+                                    value="<?php echo esc_attr(get_option('kcg_ai_chatbot_button_icon', '')); ?>">
+                                <div class="kcg-image-preview">
+                                    <?php 
+                                    $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
+                                    if ($button_icon): 
+                                    ?>
+                                        <img src="<?php echo esc_url($button_icon); ?>" style="max-width: 60px; max-height: 60px; border-radius: 50%; border: 2px solid #ddd;">
+                                    <?php endif; ?>
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <button type="button" class="button kcg-upload-image-btn" data-field="kcg_ai_chatbot_button_icon">
+                                        <?php _e('Upload Chat Button Icon', 'kaichat'); ?>
+                                    </button>
+                                    <button type="button" class="button kcg-remove-image-btn" data-field="kcg_ai_chatbot_button_icon" 
+                                            style="<?php echo $button_icon ? '' : 'display: none;'; ?> margin-left: 10px;">
+                                        <?php _e('Remove', 'kaichat'); ?>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="description"><?php _e('Upload a custom icon for the floating chat button. Recommended size: 60x60px. This will replace the default chat bubble icon.', 'kaichat'); ?></p>
+                        </td>
+                    </tr>
+                </table>
                 
                 <?php submit_button(__('Save Design Settings', 'kaichat'), 'primary', 'kcg_ai_chatbot_save_design'); ?>
             </form>
@@ -173,13 +241,18 @@ wp_enqueue_script('wp-color-picker');
                 <!-- Header Preview -->
                 <div class="preview-header" style="padding: 15px; color: <?php echo esc_attr($header_text); ?>; background: <?php echo esc_attr($header_bg); ?>;">
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <div style="width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                            </svg>
+                        <div class="preview-assistant-avatar" style="width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <?php if ($assistant_avatar): ?>
+                                <img src="<?php echo esc_url($assistant_avatar); ?>" alt="AI Assistant" 
+                                    style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                            <?php else: ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                    <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                    <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                </svg>
+                            <?php endif; ?>
                         </div>
                         <div>
                             <div style="font-weight: bold;"><?php _e('AI Assistant', 'kaichat'); ?></div>
@@ -244,13 +317,18 @@ wp_enqueue_script('wp-color-picker');
                 </div>
             </div>
             
-            <!-- Button Preview -->
+            <!-- Chat Button Preview -->
             <div style="margin-top: 20px;">
                 <p><strong><?php _e('Chat Button', 'kaichat'); ?></strong></p>
-                <div class="preview-chat-button" style="width: 60px; height: 60px; border-radius: 50%; background: <?php echo esc_attr($button_bg); ?>; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; margin: 10px 0;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="<?php echo esc_attr($button_text); ?>" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
+                <div class="preview-chat-button" style="width: 60px; height: 60px; border-radius: 50%; background: <?php echo esc_attr($button_bg); ?>; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; margin: 10px 0; overflow: hidden;">
+                    <?php if ($button_icon): ?>
+                        <img src="<?php echo esc_url($button_icon); ?>" alt="Chat" 
+                            style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                    <?php else: ?>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="<?php echo esc_attr($button_text); ?>" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

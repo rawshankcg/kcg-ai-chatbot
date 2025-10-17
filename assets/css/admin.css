@@ -117,3 +117,56 @@ Conversation Tab Styles */
         margin-top: -30px;
     }
 }
+
+/* Design for No Sessions Message  */
+.kcg-image-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-width: 300px;
+}
+
+.kcg-image-preview {
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5px 0;
+}
+
+.kcg-image-preview img {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.kcg-image-preview img:hover {
+    transform: scale(1.05);
+}
+
+.kcg-upload-image-btn {
+    align-self: flex-start;
+}
+
+.kcg-remove-image-btn {
+    color: #b32d2e !important;
+    border-color: #b32d2e !important;
+    align-self: flex-start;
+}
+
+.kcg-remove-image-btn:hover {
+    background: #b32d2e !important;
+    color: white !important;
+}
+
+/* Preview container styling */
+.preview-assistant-avatar,
+.preview-bot-avatar,
+.preview-chat-button {
+    overflow: hidden;
+}
+
+.preview-assistant-avatar img,
+.preview-bot-avatar img,
+.preview-chat-button img {
+    transition: transform 0.2s ease;
+}
