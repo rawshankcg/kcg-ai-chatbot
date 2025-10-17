@@ -10,6 +10,7 @@ class KCG_AI_Ajax_Handlers {
         add_action('wp_ajax_kcg_process_single_post', array($this, 'process_single_post'));
         add_action('wp_ajax_kcg_test_gemini_connection', array($this, 'test_gemini_connection'));
         add_action('wp_ajax_kcg_unindex_single_post', array($this, 'unindex_single_post'));
+        add_action('wp_ajax_kcg_delete_session', array($this, 'delete_session'));
     }
 
 
@@ -106,6 +107,37 @@ class KCG_AI_Ajax_Handlers {
         }
         
         wp_send_json_success($result);
+    }
+
+    /**
+     * Delete Session AJAX Handler
+     */
+    public function delete_session() {
+        check_ajax_referer('kcg_delete_session', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Permission denied');
+        }
+        
+        $session_id = sanitize_text_field($_POST['session_id']);
+        
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'kcg_ai_chatbot_conversations';
+        
+        $deleted = $wpdb->delete(
+            $table_name,
+            array('session_id' => $session_id),
+            array('%s')
+        );
+        
+        if ($deleted === false) {
+            wp_send_json_error('Failed to delete session');
+        }
+        
+        wp_send_json_success(array(
+            'message' => sprintf(__('Session deleted successfully. %d messages removed.', 'kaichat'), $deleted),
+            'deleted_count' => $deleted
+        ));
     }
 }
 

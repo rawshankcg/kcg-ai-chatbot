@@ -235,6 +235,107 @@
       });
     });
 
+    // Convertion Tab 
+    let allExpanded = false;
+    // Individual session toggle
+    $('.kcg-session-header').on('click', function () {
+      const sessionId = $(this).data('session-id');
+      const content = $(`.kcg-session-content[data-session-id="${sessionId}"]`);
+      const icon = $(this).find('.kcg-toggle-icon');
+
+      if (content.is(':visible')) {
+        // Collapse
+        content.slideUp(300, function () {
+          content.css('max-height', '0');
+        });
+        icon.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-right-alt2');
+        icon.css('transform', 'rotate(0deg)');
+      } else {
+        // Expand
+        content.css('max-height', 'none').slideDown(300);
+        icon.removeClass('dashicons-arrow-right-alt2').addClass('dashicons-arrow-down-alt2');
+        icon.css('transform', 'rotate(90deg)');
+      }
+    });
+
+    // Toggle all sessions
+    $('#kcg-toggle-all-sessions').on('click', function () {
+      const button = $(this);
+
+      if (!allExpanded) {
+        // Expand all
+        $('.kcg-session-content').each(function () {
+          const content = $(this);
+          const sessionId = content.data('session-id');
+          const icon = $(`.kcg-session-header[data-session-id="${sessionId}"] .kcg-toggle-icon`);
+
+          if (!content.is(':visible')) {
+            content.css('max-height', 'none').slideDown(300);
+            icon.removeClass('dashicons-arrow-right-alt2').addClass('dashicons-arrow-down-alt2');
+            icon.css('transform', 'rotate(90deg)');
+          }
+        });
+        button.text(kcgAiChatbotAdmin.strings.collapseAll || 'Collapse All Sessions');
+        allExpanded = true;
+      } else {
+        // Collapse all
+        $('.kcg-session-content').each(function () {
+          const content = $(this);
+          const sessionId = content.data('session-id');
+          const icon = $(`.kcg-session-header[data-session-id="${sessionId}"] .kcg-toggle-icon`);
+
+          if (content.is(':visible')) {
+            content.slideUp(300, function () {
+              content.css('max-height', '0');
+            });
+            icon.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-right-alt2');
+            icon.css('transform', 'rotate(0deg)');
+          }
+        });
+        button.text(kcgAiChatbotAdmin.strings.expandAll || 'Expand All Sessions');
+        allExpanded = false;
+      }
+    });
+
+    // Delete session functionality
+    $('.kcg-delete-session').on('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const sessionId = $(this).data('session-id');
+      const sessionContainer = $(this).closest('.kcg-session-container');
+
+      console.log('Deleting session ID:', sessionId);
+
+      if (!confirm(kcgAiChatbotAdmin.strings.confirmDeleteSession || 'Are you sure you want to delete this entire session? This action cannot be undone.')) {
+        return;
+      }
+
+      // Add loading state
+      $(this).prop('disabled', true).html('<span class="dashicons dashicons-update-alt" style="animation: spin 1s linear infinite;"></span>');
+
+      $.post(kcgAiChatbotAdmin.ajaxUrl, {
+        action: 'kcg_delete_session',
+        session_id: sessionId,
+        nonce: kcgAiChatbotAdmin.deleteSessionNonce
+      }, function (response) {
+        if (response.success) {
+          sessionContainer.fadeOut(300, function () {
+            $(this).remove();
+
+            // Check if no sessions left
+            if ($('.kcg-session-container').length === 0) {
+              location.reload();
+            }
+          });
+        } else {
+          alert('Error: ' + response.data);
+        }
+      }).fail(function () {
+        alert('An unexpected error occurred.');
+      });
+    });
+
 
   });
 

@@ -88,7 +88,7 @@ if ($query->have_posts()) {
 
         <div class="kcg-stats-card">
             <h3 style="margin-top: 0;"><?php _e('All Indexed', 'kaichat'); ?></h3>
-            <p style="font-size: 24px; font-weight: bold; color: #764ba2;"><?php echo number_format($total_posts_indexed); ?></p>
+            <p style="font-size: 24px; font-weight: bold; color: #764ba2;"><?php echo number_format($total_posts_indexed); ?> <?php echo $total_vectors; ?></p>
         </div>
         
     </div>

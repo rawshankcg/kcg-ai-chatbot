@@ -68,3 +68,52 @@
 .kcg-stats-card {
     background: white; padding: 20px; border: 1px solid #ddd; border-radius: 8px; flex: 1;
 }
+
+Conversation Tab Styles */
+.kcg-session-container {
+    transition: all 0.3s ease;
+}
+
+.kcg-session-header:hover {
+    background: #f0f0f1 !important;
+}
+
+.kcg-session-header .kcg-session-actions {
+    transition: opacity 0.2s ease;
+}
+
+.kcg-session-header:hover .kcg-session-actions {
+    opacity: 1 !important;
+}
+
+.kcg-toggle-icon {
+    transition: transform 0.2s ease !important;
+}
+
+.kcg-session-content {
+    transition: all 0.3s ease;
+}
+
+.kcg-session-badge {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.kcg-delete-session:hover {
+    background: rgba(179, 45, 46, 0.1);
+    border-radius: 3px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .kcg-session-header > div {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+    
+    .kcg-session-header .kcg-session-actions {
+        align-self: flex-end;
+        margin-top: -30px;
+    }
+}

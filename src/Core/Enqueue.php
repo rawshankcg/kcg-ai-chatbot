@@ -55,6 +55,7 @@ class KCG_AI_Chatbot_Enqueue {
             'processSingleNonce' => wp_create_nonce('kcg_process_single'), 
             'processAllNonce' => wp_create_nonce('kcg_process_all'),
             'unindexSingleNonce' => wp_create_nonce('kcg_unindex_single'),
+            'deleteSessionNonce' => wp_create_nonce('kcg_delete_session'),
             'strings' => array(
                 'saved' => __('Settings saved successfully!', 'kaichat'),
                 'error' => __('An error occurred. Please try again.', 'kaichat'),
