@@ -64,7 +64,7 @@ class KCG_AI_Gemini_Handler {
             return new WP_Error('no_api_key', 'Gemini API key is not configured');
         }
         
-        $model = get_option('kcg_ai_chatbot_model', 'gemini-2.5-pro');
+        $model = get_option('kcg_ai_chatbot_model', $this->chat_model);
         $url = $this->api_endpoint . $model . ':generateContent';
         
         $system_prompt = $this->build_system_prompt($context);
