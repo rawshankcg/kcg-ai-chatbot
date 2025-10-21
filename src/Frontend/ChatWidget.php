@@ -21,14 +21,15 @@ class KCG_AI_Chatbot_Widget {
     public function render_chat_widget() {
         $enabled = get_option('kcg_ai_chatbot_enabled', true);
         $max_token = get_option('kcg_ai_chatbot_total_tokens', 0);
+        $api_key = get_option('kcg_ai_chatbot_api_key', '');
         
         if (!$enabled) {
             return;
         }
 
-        // if ($max_token >= 10000) {
-        //     return;
-        // }
+        if (empty($api_key) && ($max_token >= 10000)) {
+            return;
+        }
 
         if (file_exists(KCG_AI_CHATBOT_PLUGIN_DIR . 'templates/frontend/chat-widget.php')) {
             include KCG_AI_CHATBOT_PLUGIN_DIR . 'templates/frontend/chat-widget.php';

@@ -48,18 +48,19 @@ $token_limit = 10000;
 $token_percentage = ($total_tokens / $token_limit) * 100;
 $remaining_tokens = max(0, $token_limit - $total_tokens);
 $token_status_color = $token_percentage >= 90 ? '#dc3232' : ($token_percentage >= 70 ? '#f0a500' : '#10b981');
-
 ?>
 
 <div class="wrap">
     <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
     
+    <?php if(empty($api_key) && isset($api_key)): ?>
     <!-- Token Usage Statistics -->
     <div class="kcg-token-stats-card" style="background: white; border: 1px solid #c3c4c7; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
         <h2 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
             <span class="dashicons dashicons-chart-bar" style="font-size: 24px;"></span>
-            <?php _e('Token Usage Statistics', 'kaichat'); ?>
+            <?php _e('Default Api Token Usage Statistics', 'kaichat'); ?>
         </h2>
+        
         
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
             <div style="text-align: center; padding: 15px; background: #f9f9f9; border-radius: 6px;">
@@ -119,6 +120,7 @@ $token_status_color = $token_percentage >= 90 ? '#dc3232' : ($token_percentage >
         </div>
         <?php endif; ?>
     </div>
+    <?php endif; ?>
     
     <form method="post" action="">
         <?php wp_nonce_field('kcg_ai_chatbot_settings_action', 'kcg_ai_chatbot_settings_nonce'); ?>

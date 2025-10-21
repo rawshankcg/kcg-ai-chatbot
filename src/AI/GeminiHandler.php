@@ -200,18 +200,25 @@ class KCG_AI_Gemini_Handler {
             $prompt .= "The website is about: {$site_description}. ";
         }
         
-        if (!empty($custom_instructions)) {
-            $prompt .= $custom_instructions . " ";
-        }
+        // if (!empty($custom_instructions)) {
+        //     $prompt .= $custom_instructions . " ";
+        // }
         
+        // === MODIFICATION START ===
+        // This block is modified to enforce RAG-only responses
         if (!empty($context)) {
-            $prompt .= "\n\nUse the following information from our website to answer the user's question accurately:\n\n";
+            $prompt .= "\n\nUse ONLY the following information from our website to answer the user's question accurately:\n\n";
+            $prompt .= "--- Information Start ---\n";
             $prompt .= $context;
-            $prompt .= "\n\nIf the information doesn't contain the answer, you can provide general help based on your knowledge.";
+            $prompt .= "\n--- Information End ---\n\n";
+            $prompt .= "If the information provided does not contain the answer to the user's question, you MUST respond with only the ".$custom_instructions.". Do not provide any other information or engage in general conversation.";
+        } else {
+            // If there is no context at all, the AI should not be able to answer.
+            $prompt .= "\n\nYou have no information to answer any questions. You MUST respond to all questions with only the word: 'bye'.";
         }
         
-        $prompt .= "\n\nAlways be helpful, friendly, and professional. Keep responses concise but informative.";
-        
+        $prompt .= "\n\nAlways be helpful, friendly, and professional, but strictly follow the rules about using only the provided information.";
+        // === MODIFICATION END ===        
         return $prompt;
     }
     

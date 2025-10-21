@@ -154,12 +154,10 @@ class KCG_AI_Rest_Endpoints {
         $total_tokens = intval(get_option('kcg_ai_chatbot_total_tokens', 0));
         $token_limit = 10000;
 
-        // If user has DIFFERENT key than demo key, no limit applies
         if (!empty($api_key) && $api_key !== $this->demo_api_key) {
-            return true; // Custom API key = unlimited usage
+            return true; 
         }
 
-        // Check if limit reached (demo mode)
         if ($total_tokens >= $token_limit) {
             return new WP_Error(
                 'token_limit_reached',
@@ -211,7 +209,7 @@ class KCG_AI_Rest_Endpoints {
      * 
      * @return bool True if using demo key, false if custom key
      */
-    private function is_using_demo_key() {
+    public function is_using_demo_key() {
         $api_key = get_option('kcg_ai_chatbot_api_key', '');
         
         // No key = demo mode

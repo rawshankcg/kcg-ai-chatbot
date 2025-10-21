@@ -60,7 +60,7 @@
 
       const message = this.input.val().trim();
 
-      if (!message || this.isTyping || this.tokenLimitReached) {
+      if (!message || this.isTyping) {
         return;
       }
 
@@ -120,16 +120,6 @@
       this.scrollToBottom();
     }
 
-    addTokenLimitMessage() {
-      const message = 'You have reached the token limit of 10,000. Please contact the site administrator to add their own Google Gemini API key to continue using the chatbot.';
-      this.addErrorMessage(message);
-
-      // Disable input
-      this.input.prop('disabled', true).attr('placeholder', 'Token limit reached');
-      this.sendBtn.prop('disabled', true);
-      this.tokenLimitReached = true;
-    }
-
     showTypingIndicator() {
       this.typingIndicator.fadeIn(200);
       this.isTyping = true;
@@ -153,6 +143,7 @@
         url: kcgAiChatbot.restUrl + 'chat',
         method: 'POST',
         data: JSON.stringify(data),
+
         contentType: 'application/json',
         beforeSend: (xhr) => {
           xhr.setRequestHeader('X-WP-Nonce', kcgAiChatbot.nonce);
