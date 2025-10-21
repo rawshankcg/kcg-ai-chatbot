@@ -3,6 +3,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Handle token reset
+if (isset($_POST['kcg_reset_token_count']) && check_admin_referer('kcg_ai_chatbot_settings_action', 'kcg_ai_chatbot_settings_nonce')) {
+    KCG_AI_Rest_Endpoints::reset_token_count();
+    echo '<div class="notice notice-success"><p>' . __('Token count has been reset successfully!', 'kaichat') . '</p></div>';
+}
+
 // Save settings if form submitted
 if (isset($_POST['kcg_ai_chatbot_save_settings'])) {
     check_admin_referer('kcg_ai_chatbot_settings_action', 'kcg_ai_chatbot_settings_nonce');
@@ -35,10 +41,84 @@ $max_tokens = get_option('kcg_ai_chatbot_max_tokens', 500);
 $temperature = get_option('kcg_ai_chatbot_temperature', 0.7);
 $welcome_message = get_option('kcg_ai_chatbot_welcome_message', 'Hello! How can I help you today?');
 $instructions = get_option('kcg_ai_chatbot_instructions', '');
+
+// Get token usage statistics
+$total_tokens = intval(get_option('kcg_ai_chatbot_total_tokens', 0));
+$token_limit = 10000;
+$token_percentage = ($total_tokens / $token_limit) * 100;
+$remaining_tokens = max(0, $token_limit - $total_tokens);
+$token_status_color = $token_percentage >= 90 ? '#dc3232' : ($token_percentage >= 70 ? '#f0a500' : '#10b981');
+
 ?>
 
 <div class="wrap">
     <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+    
+    <!-- Token Usage Statistics -->
+    <div class="kcg-token-stats-card" style="background: white; border: 1px solid #c3c4c7; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        <h2 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
+            <span class="dashicons dashicons-chart-bar" style="font-size: 24px;"></span>
+            <?php _e('Token Usage Statistics', 'kaichat'); ?>
+        </h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+            <div style="text-align: center; padding: 15px; background: #f9f9f9; border-radius: 6px;">
+                <div style="font-size: 28px; font-weight: bold; color: <?php echo esc_attr($token_status_color); ?>;">
+                    <?php echo number_format($total_tokens); ?>
+                </div>
+                <div style="color: #646970; font-size: 13px; margin-top: 5px;">
+                    <?php _e('Total Tokens Used', 'kaichat'); ?>
+                </div>
+            </div>
+            
+            <div style="text-align: center; padding: 15px; background: #f9f9f9; border-radius: 6px;">
+                <div style="font-size: 28px; font-weight: bold; color: #2271b1;">
+                    <?php echo number_format($remaining_tokens); ?>
+                </div>
+                <div style="color: #646970; font-size: 13px; margin-top: 5px;">
+                    <?php _e('Tokens Remaining', 'kaichat'); ?>
+                </div>
+            </div>
+            
+            <div style="text-align: center; padding: 15px; background: #f9f9f9; border-radius: 6px;">
+                <div style="font-size: 28px; font-weight: bold; color: #646970;">
+                    <?php echo number_format($token_limit); ?>
+                </div>
+                <div style="color: #646970; font-size: 13px; margin-top: 5px;">
+                    <?php _e('Token Limit', 'kaichat'); ?>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div style="margin: 20px 0;">
+            <div style="background: #f0f0f1; height: 30px; border-radius: 15px; overflow: hidden; position: relative;">
+                <div style="background: <?php echo esc_attr($token_status_color); ?>; height: 100%; width: <?php echo min(100, $token_percentage); ?>%; transition: width 0.3s ease; display: flex; align-items: center; justify-content: center;">
+                    <span style="color: white; font-weight: bold; font-size: 12px; position: absolute; left: 50%; transform: translateX(-50%);">
+                        <?php echo number_format($token_percentage, 1); ?>% <?php _e('Used', 'kaichat'); ?>
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <?php if ($token_percentage >= 90): ?>
+        <div class="notice notice-warning inline" style="margin: 15px 0;">
+            <p>
+                <strong><?php _e('Warning:', 'kaichat'); ?></strong>
+                <?php _e('You are approaching your token limit. Please add your own Google Gemini API key to continue using the chatbot without interruption.', 'kaichat'); ?>
+            </p>
+        </div>
+        <?php endif; ?>
+        
+        <?php if ($total_tokens >= $token_limit): ?>
+        <div class="notice notice-error inline" style="margin: 15px 0;">
+            <p>
+                <strong><?php _e('Token Limit Reached!', 'kaichat'); ?></strong>
+                <?php _e('The chatbot is now disabled. Please add your own Google Gemini API key below to continue using the chatbot. The token counter will automatically reset when you add a new API key.', 'kaichat'); ?>
+            </p>
+        </div>
+        <?php endif; ?>
+    </div>
     
     <form method="post" action="">
         <?php wp_nonce_field('kcg_ai_chatbot_settings_action', 'kcg_ai_chatbot_settings_nonce'); ?>
@@ -73,6 +153,9 @@ $instructions = get_option('kcg_ai_chatbot_instructions', '');
                     <p class="description">
                         <?php _e('Enter your Google Gemini API key. Get it from', 'kaichat'); ?>
                         <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a>
+                        <br>
+                        <strong><?php _e('Note:', 'kaichat'); ?></strong>
+                        <?php _e('Adding your own API key will remove the 10,000 token limit.', 'kaichat'); ?>
                     </p>
                 </td>
             </tr>

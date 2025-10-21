@@ -65,10 +65,11 @@ class KCG_AI_Chatbot_Activator {
         $defaults = [
             'kcg_ai_chatbot_enabled' => true,
             'kcg_ai_chatbot_api_key' => '',
-            'kcg_ai_chatbot_model' => 'gpt-3.5-turbo',
+            'kcg_ai_chatbot_model' => 'gemini-2.5-pro',
             'kcg_ai_chatbot_max_tokens' => 500,
             'kcg_ai_chatbot_temperature' => 0.7,
             'kcg_ai_chatbot_welcome_message' => 'Hello! How can I help you today?',
+            'kcg_ai_chatbot_total_tokens' => 0,
         ];
         
         foreach ($defaults as $key => $value) {

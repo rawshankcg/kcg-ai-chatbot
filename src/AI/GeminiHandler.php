@@ -1,4 +1,17 @@
 <?php
+/**
+ * Complete GeminiHandler.php - Full Functional Code
+ * File: src/AI/GeminiHandler.php
+ * 
+ * Features:
+ * - Demo API key support with fallback
+ * - Text embedding generation
+ * - Chat response generation
+ * - Conversation history support
+ * - Context-aware responses
+ * - Connection testing
+ */
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -10,12 +23,29 @@ class KCG_AI_Gemini_Handler {
     private $embedding_model = 'gemini-embedding-001';
     private $chat_model = 'gemini-2.5-pro';
     
+    /**
+     * Demo API key - Replace with your actual Google Gemini API key
+     * Get yours from: https://makersuite.google.com/app/apikey
+     * IMPORTANT: Use the SAME key as in ChatHandler.php
+     */
+    private $demo_api_key = 'AIzaSyCw7ppazznLnCblZ6p7nO4uOQK0lp2jjzU';
+    
     public function __construct() {
-        $this->api_key = get_option('kcg_ai_chatbot_api_key', '');
+        $saved_key = get_option('kcg_ai_chatbot_api_key', '');
+        
+        // Use saved key if exists, otherwise use demo key
+        if (!empty($saved_key)) {
+            $this->api_key = $saved_key;
+        } else {
+            $this->api_key = $this->demo_api_key;
+        }
     }
     
     /**
      * Generate embeddings for text using Gemini
+     * 
+     * @param string $text Text to generate embedding for
+     * @return array|WP_Error Embedding array or error
      */
     public function generate_embedding($text) {
         if (empty($this->api_key)) {
@@ -53,11 +83,20 @@ class KCG_AI_Gemini_Handler {
             return $data['embedding']['values'];
         }
         
+        if (isset($data['error'])) {
+            return new WP_Error('api_error', $data['error']['message'] ?? 'API Error occurred');
+        }
+        
         return new WP_Error('embedding_failed', 'Failed to generate embedding');
     }
     
     /**
      * Generate chat response using Gemini
+     * 
+     * @param string $prompt User's message
+     * @param string $context Context from knowledge base
+     * @param array $conversation_history Previous conversation messages
+     * @return array|WP_Error Response data or error
      */
     public function generate_response($prompt, $context = '', $conversation_history = []) {
         if (empty($this->api_key)) {
@@ -67,12 +106,15 @@ class KCG_AI_Gemini_Handler {
         $model = get_option('kcg_ai_chatbot_model', $this->chat_model);
         $url = $this->api_endpoint . $model . ':generateContent';
         
+        // Build system prompt with context
         $system_prompt = $this->build_system_prompt($context);
         
         $parts = [];
         
+        // Add system prompt
         $parts[] = ['text' => $system_prompt];
         
+        // Add conversation history
         foreach ($conversation_history as $message) {
             if (isset($message['user'])) {
                 $parts[] = ['text' => "User: " . $message['user']];
@@ -82,8 +124,10 @@ class KCG_AI_Gemini_Handler {
             }
         }
         
+        // Add current user message
         $parts[] = ['text' => "User: " . $prompt];
         
+        // Prepare request body
         $body = [
             'contents' => [
                 [
@@ -104,6 +148,7 @@ class KCG_AI_Gemini_Handler {
             ]
         ];
         
+        // Make API request
         $response = wp_remote_post($url, [
             'headers' => [
                 'Content-Type'   => 'application/json',
@@ -120,6 +165,7 @@ class KCG_AI_Gemini_Handler {
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body, true);
         
+        // Extract response
         if (isset($data['candidates'][0]['content']['parts'][0]['text'])) {
             return [
                 'text' => $data['candidates'][0]['content']['parts'][0]['text'],
@@ -129,6 +175,7 @@ class KCG_AI_Gemini_Handler {
             ];
         }
         
+        // Handle API errors
         if (isset($data['error'])) {
             return new WP_Error('api_error', $data['error']['message'] ?? 'API Error occurred');
         }
@@ -138,6 +185,9 @@ class KCG_AI_Gemini_Handler {
     
     /**
      * Build system prompt with context
+     * 
+     * @param string $context Context from knowledge base
+     * @return string Complete system prompt
      */
     private function build_system_prompt($context = '') {
         $site_name = get_bloginfo('name');
@@ -167,8 +217,14 @@ class KCG_AI_Gemini_Handler {
     
     /**
      * Test API connection
+     * 
+     * @return bool|WP_Error True if successful, WP_Error if failed
      */
     public function test_connection() {
+        if (empty($this->api_key)) {
+            return new WP_Error('no_api_key', 'Gemini API key is not configured');
+        }
+        
         $result = $this->generate_response("Hello, this is a test. Please respond with 'Connection successful!'");
         
         if (is_wp_error($result)) {
@@ -176,5 +232,23 @@ class KCG_AI_Gemini_Handler {
         }
         
         return true;
+    }
+    
+    /**
+     * Get current API key status
+     * 
+     * @return array API key information
+     */
+    public function get_api_key_status() {
+        $saved_key = get_option('kcg_ai_chatbot_api_key', '');
+        
+        $is_demo = empty($saved_key) || $saved_key === $this->demo_api_key;
+        
+        return [
+            'has_key' => !empty($this->api_key),
+            'is_demo' => $is_demo,
+            'is_custom' => !$is_demo && !empty($saved_key),
+            'key_preview' => !empty($this->api_key) ? substr($this->api_key, 0, 10) . '...' : 'None'
+        ];
     }
 }
