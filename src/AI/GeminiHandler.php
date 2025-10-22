@@ -211,7 +211,7 @@ class KCG_AI_Gemini_Handler {
             $prompt .= "--- Information Start ---\n";
             $prompt .= $context;
             $prompt .= "\n--- Information End ---\n\n";
-            $prompt .= "If the information provided does not contain the answer to the user's question, you MUST respond with only the ".$custom_instructions.". Do not provide any other information or engage in general conversation.";
+            $prompt .= "If the information provided does not contain the answer to the user's question, you MUST respond with only the {$custom_instructions}. Do not provide any other information or engage in general conversation.";
         } else {
             // If there is no context at all, the AI should not be able to answer.
             $prompt .= "\n\nYou have no information to answer any questions. You MUST respond to all questions with only the word: 'bye'.";

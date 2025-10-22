@@ -11,6 +11,11 @@ if (isset($_POST['kcg_reset_token_count']) && check_admin_referer('kcg_ai_chatbo
 
 // Save settings if form submitted
 if (isset($_POST['kcg_ai_chatbot_save_settings'])) {
+    
+    $allowed_instruction = array(
+        'a' => array( 'href' => array(), 'title' => array() ),
+    );
+
     check_admin_referer('kcg_ai_chatbot_settings_action', 'kcg_ai_chatbot_settings_nonce');
     
     update_option('kcg_ai_chatbot_enabled', isset($_POST['kcg_ai_chatbot_enabled']) ? 1 : 0);
@@ -19,7 +24,7 @@ if (isset($_POST['kcg_ai_chatbot_save_settings'])) {
     update_option('kcg_ai_chatbot_max_tokens', intval($_POST['kcg_ai_chatbot_max_tokens']));
     update_option('kcg_ai_chatbot_temperature', floatval($_POST['kcg_ai_chatbot_temperature']));
     update_option('kcg_ai_chatbot_welcome_message', sanitize_textarea_field($_POST['kcg_ai_chatbot_welcome_message']));
-    update_option('kcg_ai_chatbot_instructions', sanitize_textarea_field($_POST['kcg_ai_chatbot_instructions']));
+    update_option('kcg_ai_chatbot_instructions', wp_kses_post($_POST['kcg_ai_chatbot_instructions']));
     
     // Knowledge Base Settings
     update_option('kcg_use_knowledge_base', isset($_POST['kcg_use_knowledge_base']) ? 1 : 0);
