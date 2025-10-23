@@ -21,6 +21,7 @@ class KCG_AI_Vector_Model {
         $content_hash = hash('sha256', $content);
         $token_count = str_word_count($content);
         
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe, defined by the class
         $existing = $wpdb->get_var($wpdb->prepare(
             "SELECT id FROM {$this->table_name} WHERE content_hash = %s",
             $content_hash
@@ -63,6 +64,7 @@ class KCG_AI_Vector_Model {
     public function search_similar($query_embedding, $limit = 5) {
         global $wpdb;
         
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe, defined by the class
         $vectors = $wpdb->get_results($wpdb->prepare(
             "SELECT * FROM {$this->table_name} ORDER BY created_at DESC LIMIT %d",
             $limit
@@ -114,6 +116,7 @@ class KCG_AI_Vector_Model {
         global $wpdb;
         
         if ($source_id) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe, defined by the class
             return $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM {$this->table_name} WHERE source = %s AND source_id = %d",
                 $source,
@@ -161,6 +164,7 @@ class KCG_AI_Vector_Model {
     public function get_vector_count_by_post($post_id) {
         global $wpdb;
         
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe, defined by the class
         return $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM {$this->table_name} WHERE source = 'post' AND source_id = %d",
             $post_id

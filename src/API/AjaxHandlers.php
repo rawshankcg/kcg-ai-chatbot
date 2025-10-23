@@ -24,7 +24,7 @@ class KCG_AI_Ajax_Handlers {
             wp_send_json_error('Permission denied');
         }
         
-        $post_types = isset($_POST['post_types']) ? array_map('sanitize_text_field', $_POST['post_types']) : ['post', 'page'];
+        $post_types = isset($_POST['post_types']) ? array_map('sanitize_text_field', wp_unslash($_POST['post_types'])) : ['post', 'page'];
         
         $processor = new KCG_AI_Content_Processor();
         $result = $processor->process_all_posts($post_types);
@@ -61,7 +61,7 @@ class KCG_AI_Ajax_Handlers {
             wp_send_json_error('Permission denied');
         }
         
-        $post_id = intval($_POST['post_id']);
+        $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
         
         $processor = new KCG_AI_Content_Processor();
         $result = $processor->process_post($post_id);
@@ -97,7 +97,7 @@ class KCG_AI_Ajax_Handlers {
             wp_send_json_error('Permission denied');
         }
         
-        $post_id = intval($_POST['post_id']);
+        $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
         
         $processor = new KCG_AI_Content_Processor();
         $result = $processor->unindex_post($post_id);
@@ -119,7 +119,7 @@ class KCG_AI_Ajax_Handlers {
             wp_send_json_error('Permission denied');
         }
         
-        $session_id = sanitize_text_field($_POST['session_id']);
+        $session_id = isset($_POST['session_id']) ? sanitize_text_field(wp_unslash($_POST['session_id'])) : 0;
         
         global $wpdb;
         $table_name = $wpdb->prefix . 'kcg_ai_chatbot_conversations';

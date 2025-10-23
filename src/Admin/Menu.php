@@ -30,7 +30,7 @@ class KCG_AI_Chatbot_Menu {
     }
 
     public function render_main_page() {
-        $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'settings';
+        $active_tab = isset($_GET['tab']) ? sanitize_text_field(wp_unslash($_GET['tab'])) : 'settings';
         ?>
         <div class="wrap">
             <h1><?php esc_html_e('KCG AI Chatbot', 'kcg-ai-chatbot'); ?></h1>

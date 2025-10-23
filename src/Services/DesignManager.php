@@ -18,7 +18,7 @@ class KCG_AI_Chatbot_Design_Manager {
      */
     public static function handle_css_update() {
         // Verify nonce and capabilities
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kcg_ai_chatbot_design_action') || !current_user_can('manage_options')) {
+        if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'kcg_ai_chatbot_design_action') || !current_user_can('manage_options')) {
             wp_send_json_error('Permission denied');
             return;
         }

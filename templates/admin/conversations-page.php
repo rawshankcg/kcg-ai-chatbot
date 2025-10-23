@@ -7,12 +7,17 @@ global $wpdb;
 $table_name = $wpdb->prefix . 'kcg_ai_chatbot_conversations';
 
 $per_page = 5;
-$current_page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+$current_page = 1;
+if (isset($_GET['paged']) && check_admin_referer('kcg_conversations_page', 'conversations_nonce')) {
+    $current_page = max(1, intval($_GET['paged']));
+}
 $offset = ($current_page - 1) * $per_page;
 
+// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe, defined by the class 
 $total_sessions = $wpdb->get_var("SELECT COUNT(DISTINCT session_id) FROM $table_name");
 $total_pages = ceil($total_sessions / $per_page);
 
+// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe, defined by the class
 $session_ids = $wpdb->get_col($wpdb->prepare(
     "SELECT DISTINCT session_id FROM $table_name ORDER BY session_id DESC LIMIT %d OFFSET %d",
     $per_page,
@@ -23,6 +28,7 @@ $session_ids = $wpdb->get_col($wpdb->prepare(
 $conversations = [];
 if (!empty($session_ids)) {
     $session_ids_placeholder = implode(', ', array_fill(0, count($session_ids), '%s'));
+    // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe, defined by the class
     $conversations = $wpdb->get_results($wpdb->prepare(
         "SELECT * FROM $table_name WHERE session_id IN ($session_ids_placeholder) ORDER BY session_id DESC, created_at ASC",
         ...$session_ids
@@ -35,9 +41,9 @@ foreach ($conversations as $conversation) {
     $grouped_conversations[$conversation->session_id][] = $conversation;
 }
 
-if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-    check_admin_referer('delete_conversation_' . $_GET['id']);
-    $wpdb->delete($table_name, array('id' => intval($_GET['id'])), array('%d'));
+if (isset($_GET['action']) && sanitize_text_field(wp_unslash($_GET['action'])) === 'delete' && isset($_GET['id'])) {
+    check_admin_referer('delete_conversation_' . sanitize_text_field(wp_unslash($_GET['id'])) );
+    $wpdb->delete($table_name, array('id' => intval(wp_unslash($_GET['id']))), array('%d'));
     echo '<div class="notice notice-success"><p>' . esc_html__('Conversation entry deleted successfully!', 'kcg-ai-chatbot') . '</p></div>';
 }
 ?>

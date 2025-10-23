@@ -8,17 +8,17 @@ if (isset($_POST['kcg_ai_chatbot_save_design']) && current_user_can('manage_opti
     // Verify nonce
     if (check_admin_referer('kcg_ai_chatbot_design_action', 'kcg_ai_chatbot_design_nonce')) {
         // Sanitize and save color inputs
-        $header_bg = isset($_POST['kcg_ai_chatbot_header_bg_color']) ? sanitize_hex_color($_POST['kcg_ai_chatbot_header_bg_color']) : '';
-        $header_text = isset($_POST['kcg_ai_chatbot_header_text_color']) ? sanitize_hex_color($_POST['kcg_ai_chatbot_header_text_color']) : '';
-        $user_msg_bg = isset($_POST['kcg_ai_chatbot_user_msg_bg_color']) ? sanitize_hex_color($_POST['kcg_ai_chatbot_user_msg_bg_color']) : '';
-        $user_msg_text = isset($_POST['kcg_ai_chatbot_user_msg_text_color']) ? sanitize_hex_color($_POST['kcg_ai_chatbot_user_msg_text_color']) : '';
-        $bot_msg_bg = isset($_POST['kcg_ai_chatbot_bot_msg_bg_color']) ? sanitize_hex_color($_POST['kcg_ai_chatbot_bot_msg_bg_color']) : '';
-        $bot_msg_text = isset($_POST['kcg_ai_chatbot_bot_msg_text_color']) ? sanitize_hex_color($_POST['kcg_ai_chatbot_bot_msg_text_color']) : '';
-        $button_bg = isset($_POST['kcg_ai_chatbot_button_bg_color']) ? sanitize_hex_color($_POST['kcg_ai_chatbot_button_bg_color']) : '';
-        $button_text = isset($_POST['kcg_ai_chatbot_button_text_color']) ? sanitize_hex_color($_POST['kcg_ai_chatbot_button_text_color']) : '';
-        $assistant_avatar = isset($_POST['kcg_ai_chatbot_assistant_avatar']) ? esc_url_raw($_POST['kcg_ai_chatbot_assistant_avatar']) : '';
-        $button_icon = isset($_POST['kcg_ai_chatbot_button_icon']) ? esc_url_raw($_POST['kcg_ai_chatbot_button_icon']) : '';
-        
+        $header_bg = isset($_POST['kcg_ai_chatbot_header_bg_color']) ? sanitize_hex_color(wp_unslash($_POST['kcg_ai_chatbot_header_bg_color'])) : '';
+        $header_text = isset($_POST['kcg_ai_chatbot_header_text_color']) ? sanitize_hex_color(wp_unslash($_POST['kcg_ai_chatbot_header_text_color'])) : '';
+        $user_msg_bg = isset($_POST['kcg_ai_chatbot_user_msg_bg_color']) ? sanitize_hex_color(wp_unslash($_POST['kcg_ai_chatbot_user_msg_bg_color'])) : '';
+        $user_msg_text = isset($_POST['kcg_ai_chatbot_user_msg_text_color']) ? sanitize_hex_color(wp_unslash($_POST['kcg_ai_chatbot_user_msg_text_color'])) : '';
+        $bot_msg_bg = isset($_POST['kcg_ai_chatbot_bot_msg_bg_color']) ? sanitize_hex_color(wp_unslash($_POST['kcg_ai_chatbot_bot_msg_bg_color'])) : '';
+        $bot_msg_text = isset($_POST['kcg_ai_chatbot_bot_msg_text_color']) ? sanitize_hex_color(wp_unslash($_POST['kcg_ai_chatbot_bot_msg_text_color'])) : '';
+        $button_bg = isset($_POST['kcg_ai_chatbot_button_bg_color']) ? sanitize_hex_color(wp_unslash($_POST['kcg_ai_chatbot_button_bg_color'])) : '';
+        $button_text = isset($_POST['kcg_ai_chatbot_button_text_color']) ? sanitize_hex_color(wp_unslash($_POST['kcg_ai_chatbot_button_text_color'])) : '';
+        $assistant_avatar = isset($_POST['kcg_ai_chatbot_assistant_avatar']) ? esc_url_raw(wp_unslash($_POST['kcg_ai_chatbot_assistant_avatar'])) : '';
+        $button_icon = isset($_POST['kcg_ai_chatbot_button_icon']) ? esc_url_raw(wp_unslash($_POST['kcg_ai_chatbot_button_icon'])) : '';
+
         // Update options
         update_option('kcg_ai_chatbot_header_bg_color', $header_bg);
         update_option('kcg_ai_chatbot_header_text_color', $header_text);
