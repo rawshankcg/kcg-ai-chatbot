@@ -162,7 +162,8 @@ class KCG_AI_Rest_Endpoints {
             return new WP_Error(
                 'token_limit_reached',
                 sprintf(
-                    __('You have reached the token limit of %s. Please add your own Google Gemini API key in the settings to continue using the chatbot.', 'kaichat'),
+                    /* translators: %s: The token limit number */
+                    __('You have reached the token limit of %s. Please add your own Google Gemini API key in the settings to continue using the chatbot.', 'kcg-ai-chatbot'),
                     number_format($token_limit)
                 )
             );

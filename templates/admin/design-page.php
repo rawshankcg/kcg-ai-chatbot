@@ -39,10 +39,10 @@ if (isset($_POST['kcg_ai_chatbot_save_design']) && current_user_can('manage_opti
             if (is_wp_error($result)) {
                 echo '<div class="notice notice-error"><p>' . esc_html($result->get_error_message()) . '</p></div>';
             } else {
-                echo '<div class="notice notice-success"><p>' . esc_html__('Design settings saved successfully!', 'kaichat') . '</p></div>';
+                echo '<div class="notice notice-success"><p>' . esc_html__('Design settings saved successfully!', 'kcg-ai-chatbot') . '</p></div>';
             }
         } else {
-            echo '<div class="notice notice-success"><p>' . esc_html__('Design settings saved successfully, but CSS file could not be updated.', 'kaichat') . '</p></div>';
+            echo '<div class="notice notice-success"><p>' . esc_html__('Design settings saved successfully, but CSS file could not be updated.', 'kcg-ai-chatbot') . '</p></div>';
         }
     }
 }
@@ -70,14 +70,14 @@ $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
             <form method="post" action="">
                 <?php wp_nonce_field('kcg_ai_chatbot_design_action', 'kcg_ai_chatbot_design_nonce'); ?>
                 
-                <h2><?php _e('Chatbot Appearance', 'kaichat'); ?></h2>
-                <p><?php _e('Customize the colors of your chatbot to match your website design.', 'kaichat'); ?></p>
+                <h2><?php esc_html_e('Chatbot Appearance', 'kcg-ai-chatbot'); ?></h2>
+                <p><?php esc_html_e('Customize the colors of your chatbot to match your website design.', 'kcg-ai-chatbot'); ?></p>
                 
-                <h3><?php _e('Header Colors', 'kaichat'); ?></h3>
+                <h3><?php esc_html_e('Header Colors', 'kcg-ai-chatbot'); ?></h3>
                 <table class="form-table">
                     <tr>
                         <th scope="row">
-                            <label for="kcg_ai_chatbot_header_bg_color"><?php _e('Header Background', 'kaichat'); ?></label>
+                            <label for="kcg_ai_chatbot_header_bg_color"><?php esc_html_e('Header Background', 'kcg-ai-chatbot'); ?></label>
                         </th>
                         <td>
                             <input type="text" name="kcg_ai_chatbot_header_bg_color" id="kcg_ai_chatbot_header_bg_color" 
@@ -86,7 +86,7 @@ $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="kcg_ai_chatbot_header_text_color"><?php _e('Header Text', 'kaichat'); ?></label>
+                            <label for="kcg_ai_chatbot_header_text_color"><?php esc_html_e('Header Text', 'kcg-ai-chatbot'); ?></label>
                         </th>
                         <td>
                             <input type="text" name="kcg_ai_chatbot_header_text_color" id="kcg_ai_chatbot_header_text_color" 
@@ -95,12 +95,12 @@ $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
                     </tr>
                 </table>
                 
-                <h3><?php _e('Button Colors', 'kaichat'); ?></h3>
-                <p class="description"><?php _e('These colors will be applied to both the chat button and the send button.', 'kaichat'); ?></p>
+                <h3><?php esc_html_e('Button Colors', 'kcg-ai-chatbot'); ?></h3>
+                <p class="description"><?php esc_html_e('These colors will be applied to both the chat button and the send button.', 'kcg-ai-chatbot'); ?></p>
                 <table class="form-table">
                     <tr>
                         <th scope="row">
-                            <label for="kcg_ai_chatbot_button_bg_color"><?php _e('Button Background', 'kaichat'); ?></label>
+                            <label for="kcg_ai_chatbot_button_bg_color"><?php esc_html_e('Button Background', 'kcg-ai-chatbot'); ?></label>
                         </th>
                         <td>
                             <input type="text" name="kcg_ai_chatbot_button_bg_color" id="kcg_ai_chatbot_button_bg_color" 
@@ -109,7 +109,7 @@ $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="kcg_ai_chatbot_button_text_color"><?php _e('Button Icon', 'kaichat'); ?></label>
+                            <label for="kcg_ai_chatbot_button_text_color"><?php esc_html_e('Button Icon', 'kcg-ai-chatbot'); ?></label>
                         </th>
                         <td>
                             <input type="text" name="kcg_ai_chatbot_button_text_color" id="kcg_ai_chatbot_button_text_color" 
@@ -118,59 +118,59 @@ $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
                     </tr>
                 </table>
                 
-                <h3><?php _e('User Message Colors', 'kaichat'); ?></h3>
+                <h3><?php esc_html_e('User Message Colors', 'kcg-ai-chatbot'); ?></h3>
                 <table class="form-table">
                     <tr>
                         <th scope="row">
-                            <label for="kcg_ai_chatbot_user_msg_bg_color"><?php _e('Background', 'kaichat'); ?></label>
+                            <label for="kcg_ai_chatbot_user_msg_bg_color"><?php esc_html_e('Background', 'kcg-ai-chatbot'); ?></label>
                         </th>
                         <td>
                             <input type="text" name="kcg_ai_chatbot_user_msg_bg_color" id="kcg_ai_chatbot_user_msg_bg_color" 
                                 value="<?php echo esc_attr($user_msg_bg); ?>" class="kcg-color-field" />
-                            <p class="description"><?php _e('This color will also be used for the user avatar background.', 'kaichat'); ?></p>
+                            <p class="description"><?php esc_html_e('This color will also be used for the user avatar background.', 'kcg-ai-chatbot'); ?></p>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="kcg_ai_chatbot_user_msg_text_color"><?php _e('Text', 'kaichat'); ?></label>
+                            <label for="kcg_ai_chatbot_user_msg_text_color"><?php esc_html_e('Text', 'kcg-ai-chatbot'); ?></label>
                         </th>
                         <td>
                             <input type="text" name="kcg_ai_chatbot_user_msg_text_color" id="kcg_ai_chatbot_user_msg_text_color" 
                                 value="<?php echo esc_attr($user_msg_text); ?>" class="kcg-color-field" />
-                            <p class="description"><?php _e('This color will also be used for the user avatar icon.', 'kaichat'); ?></p>
+                            <p class="description"><?php esc_html_e('This color will also be used for the user avatar icon.', 'kcg-ai-chatbot'); ?></p>
                         </td>
                     </tr>
                 </table>
                 
-                <h3><?php _e('Bot Message Colors', 'kaichat'); ?></h3>
+                <h3><?php esc_html_e('Bot Message Colors', 'kcg-ai-chatbot'); ?></h3>
                 <table class="form-table">
                     <tr>
                         <th scope="row">
-                            <label for="kcg_ai_chatbot_bot_msg_bg_color"><?php _e('Background', 'kaichat'); ?></label>
+                            <label for="kcg_ai_chatbot_bot_msg_bg_color"><?php esc_html_e('Background', 'kcg-ai-chatbot'); ?></label>
                         </th>
                         <td>
                             <input type="text" name="kcg_ai_chatbot_bot_msg_bg_color" id="kcg_ai_chatbot_bot_msg_bg_color" 
                                 value="<?php echo esc_attr($bot_msg_bg); ?>" class="kcg-color-field" />
-                            <p class="description"><?php _e('This color will also be used for the bot avatar background.', 'kaichat'); ?></p>
+                            <p class="description"><?php esc_html_e('This color will also be used for the bot avatar background.', 'kcg-ai-chatbot'); ?></p>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="kcg_ai_chatbot_bot_msg_text_color"><?php _e('Text', 'kaichat'); ?></label>
+                            <label for="kcg_ai_chatbot_bot_msg_text_color"><?php esc_html_e('Text', 'kcg-ai-chatbot'); ?></label>
                         </th>
                         <td>
                             <input type="text" name="kcg_ai_chatbot_bot_msg_text_color" id="kcg_ai_chatbot_bot_msg_text_color" 
                                 value="<?php echo esc_attr($bot_msg_text); ?>" class="kcg-color-field" />
-                            <p class="description"><?php _e('This color will also be used for the bot avatar icon.', 'kaichat'); ?></p>
+                            <p class="description"><?php esc_html_e('This color will also be used for the bot avatar icon.', 'kcg-ai-chatbot'); ?></p>
                         </td>
                     </tr>
                 </table>
 
-                <h3><?php _e('Custom Images', 'kaichat'); ?></h3>
+                <h3><?php esc_html_e('Custom Images', 'kcg-ai-chatbot'); ?></h3>
                 <table class="form-table">
                     <tr>
                         <th scope="row">
-                            <label for="kcg_ai_chatbot_assistant_avatar"><?php _e('Assistant Avatar', 'kaichat'); ?></label>
+                            <label for="kcg_ai_chatbot_assistant_avatar"><?php esc_html_e('Assistant Avatar', 'kcg-ai-chatbot'); ?></label>
                         </th>
                         <td>
                             <div class="kcg-image-upload-container">
@@ -186,21 +186,21 @@ $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
                                 </div>
                                 <div style="margin-top: 10px;">
                                     <button type="button" class="button kcg-upload-image-btn" data-field="kcg_ai_chatbot_assistant_avatar">
-                                        <?php _e('Upload Assistant Avatar', 'kaichat'); ?>
+                                        <?php esc_html_e('Upload Assistant Avatar', 'kcg-ai-chatbot'); ?>
                                     </button>
                                     <button type="button" class="button kcg-remove-image-btn" data-field="kcg_ai_chatbot_assistant_avatar" 
                                             style="<?php echo $assistant_avatar ? '' : 'display: none;'; ?> margin-left: 10px;">
-                                        <?php _e('Remove', 'kaichat'); ?>
+                                        <?php esc_html_e('Remove', 'kcg-ai-chatbot'); ?>
                                     </button>
                                 </div>
                             </div>
-                            <p class="description"><?php _e('Upload a custom avatar image for the AI assistant. Recommended size: 64x64px. This will replace the default robot icon.', 'kaichat'); ?></p>
+                            <p class="description"><?php esc_html_e('Upload a custom avatar image for the AI assistant. Recommended size: 64x64px. This will replace the default robot icon.', 'kcg-ai-chatbot'); ?></p>
                         </td>
                     </tr>
 
                     <tr>
                         <th scope="row">
-                            <label for="kcg_ai_chatbot_button_icon"><?php _e('Chat Button Icon', 'kaichat'); ?></label>
+                            <label for="kcg_ai_chatbot_button_icon"><?php esc_html_e('Chat Button Icon', 'kcg-ai-chatbot'); ?></label>
                         </th>
                         <td>
                             <div class="kcg-image-upload-container">
@@ -216,25 +216,25 @@ $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
                                 </div>
                                 <div style="margin-top: 10px;">
                                     <button type="button" class="button kcg-upload-image-btn" data-field="kcg_ai_chatbot_button_icon">
-                                        <?php _e('Upload Chat Button Icon', 'kaichat'); ?>
+                                        <?php esc_html_e('Upload Chat Button Icon', 'kcg-ai-chatbot'); ?>
                                     </button>
                                     <button type="button" class="button kcg-remove-image-btn" data-field="kcg_ai_chatbot_button_icon" 
                                             style="<?php echo $button_icon ? '' : 'display: none;'; ?> margin-left: 10px;">
-                                        <?php _e('Remove', 'kaichat'); ?>
+                                        <?php esc_html_e('Remove', 'kcg-ai-chatbot'); ?>
                                     </button>
                                 </div>
                             </div>
-                            <p class="description"><?php _e('Upload a custom icon for the floating chat button. Recommended size: 60x60px. This will replace the default chat bubble icon.', 'kaichat'); ?></p>
+                            <p class="description"><?php esc_html_e('Upload a custom icon for the floating chat button. Recommended size: 60x60px. This will replace the default chat bubble icon.', 'kcg-ai-chatbot'); ?></p>
                         </td>
                     </tr>
                 </table>
                 
-                <?php submit_button(__('Save Design Settings', 'kaichat'), 'primary', 'kcg_ai_chatbot_save_design'); ?>
+                <?php submit_button(__('Save Design Settings', 'kcg-ai-chatbot'), 'primary', 'kcg_ai_chatbot_save_design'); ?>
             </form>
         </div>
         
         <div class="kcg-design-preview" style="flex: 1; background: #f8f9fa; padding: 20px; border-radius: 8px; max-width: 380px;">
-            <h3><?php _e('Live Preview', 'kaichat'); ?></h3>
+            <h3><?php esc_html_e('Live Preview', 'kcg-ai-chatbot'); ?></h3>
             
             <!-- Chat Preview -->
             <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-top: 15px;">
@@ -255,10 +255,10 @@ $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
                             <?php endif; ?>
                         </div>
                         <div>
-                            <div style="font-weight: bold;"><?php _e('AI Assistant', 'kaichat'); ?></div>
+                            <div style="font-weight: bold;"><?php esc_html_e('AI Assistant', 'kcg-ai-chatbot'); ?></div>
                             <div style="font-size: 12px; opacity: 0.9;">
                                 <span style="width: 8px; height: 8px; background: #4ade80; border-radius: 50%; display: inline-block; margin-right: 5px;"></span>
-                                <?php _e('Online', 'kaichat'); ?>
+                                <?php esc_html_e('Online', 'kcg-ai-chatbot'); ?>
                             </div>
                         </div>
                     </div>
@@ -278,7 +278,7 @@ $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
                         </div>
                         <div style="max-width: 75%;">
                             <div class="preview-bot-message" style="background: <?php echo esc_attr($bot_msg_bg); ?>; color: <?php echo esc_attr($bot_msg_text); ?>; padding: 10px 12px; border-radius: 12px; border-bottom-left-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                                <?php _e('Hello! How can I help you today?', 'kaichat'); ?>
+                                <?php esc_html_e('Hello! How can I help you today?', 'kcg-ai-chatbot'); ?>
                             </div>
                             <div style="font-size: 11px; color: #9ca3af; margin-top: 4px; padding: 0 4px;">12:45 PM</div>
                         </div>
@@ -294,7 +294,7 @@ $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
                         </div>
                         <div style="max-width: 75%; display: flex; flex-direction: column; align-items: flex-end;">
                             <div class="preview-user-message" style="background: <?php echo esc_attr($user_msg_bg); ?>; color: <?php echo esc_attr($user_msg_text); ?>; padding: 10px 12px; border-radius: 12px; border-bottom-right-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                                <?php _e('I have a question about your services.', 'kaichat'); ?>
+                                <?php esc_html_e('I have a question about your services.', 'kcg-ai-chatbot'); ?>
                             </div>
                             <div style="font-size: 11px; color: #9ca3af; margin-top: 4px; padding: 0 4px;">12:46 PM</div>
                         </div>
@@ -305,7 +305,7 @@ $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
                 <div style="padding: 15px; border-top: 1px solid #e5e7eb;">
                     <div style="display: flex; gap: 10px; align-items: flex-end;">
                         <div style="flex: 1; border: 1px solid #d1d5db; border-radius: 12px; padding: 10px; min-height: 24px; background: white;">
-                            <?php _e('Type your message...', 'kaichat'); ?>
+                            <?php esc_html_e('Type your message...', 'kcg-ai-chatbot'); ?>
                         </div>
                         <div class="preview-send-button" style="width: 40px; height: 40px; background: <?php echo esc_attr($button_bg); ?>; border-radius: 50%; color: <?php echo esc_attr($button_text); ?>; display: flex; align-items: center; justify-content: center;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="<?php echo esc_attr($button_text); ?>" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -319,7 +319,7 @@ $button_icon = get_option('kcg_ai_chatbot_button_icon', '');
             
             <!-- Chat Button Preview -->
             <div style="margin-top: 20px;">
-                <p><strong><?php _e('Chat Button', 'kaichat'); ?></strong></p>
+                <p><strong><?php esc_html_e('Chat Button', 'kcg-ai-chatbot'); ?></strong></p>
                 <div class="preview-chat-button" style="width: 60px; height: 60px; border-radius: 50%; background: <?php echo esc_attr($button_bg); ?>; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; margin: 10px 0; overflow: hidden;">
                     <?php if ($button_icon): ?>
                         <img src="<?php echo esc_url($button_icon); ?>" alt="Chat" 

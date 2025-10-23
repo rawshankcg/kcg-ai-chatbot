@@ -61,14 +61,14 @@ class KCG_AI_Chatbot_Enqueue {
             'unindexSingleNonce' => wp_create_nonce('kcg_unindex_single'),
             'deleteSessionNonce' => wp_create_nonce('kcg_delete_session'),
             'strings' => array(
-                'saved' => __('Settings saved successfully!', 'kaichat'),
-                'error' => __('An error occurred. Please try again.', 'kaichat'),
-                'testing' => __('Testing connection...', 'kaichat'),
-                'success' => __('Connection successful!', 'kaichat'),
-                'failed' => __('Connection failed!', 'kaichat'),
-                'processing' => __('Processing...', 'kaichat'),
-                'confirmBulk' => __('Are you sure you want to index ALL content? Once done, this cannot be undone.', 'kaichat'),
-                'notIndexed' => __('Not Indexed', 'kaichat'),
+                'saved' => __('Settings saved successfully!', 'kcg-ai-chatbot'),
+                'error' => __('An error occurred. Please try again.', 'kcg-ai-chatbot'),
+                'testing' => __('Testing connection...', 'kcg-ai-chatbot'),
+                'success' => __('Connection successful!', 'kcg-ai-chatbot'),
+                'failed' => __('Connection failed!', 'kcg-ai-chatbot'),
+                'processing' => __('Processing...', 'kcg-ai-chatbot'),
+                'confirmBulk' => __('Are you sure you want to index ALL content? Once done, this cannot be undone.', 'kcg-ai-chatbot'),
+                'notIndexed' => __('Not Indexed', 'kcg-ai-chatbot'),
             )
         ));
     }
@@ -115,15 +115,15 @@ class KCG_AI_Chatbot_Enqueue {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'restUrl' => rest_url('kcg-ai-chatbot/v1/'),
             'nonce' => wp_create_nonce('wp_rest'),
-            'welcomeMessage' => get_option('kcg_ai_chatbot_welcome_message', __('Hello! How can I help you?', 'kaichat')),
-            'placeholder' => __('Type your message...', 'kaichat'),
+            'welcomeMessage' => get_option('kcg_ai_chatbot_welcome_message', __('Hello! How can I help you?', 'kcg-ai-chatbot')),
+            'placeholder' => __('Type your message...', 'kcg-ai-chatbot'),
             'strings' => array(
-                'sendButton' => __('Send', 'kaichat'),
-                'typing' => __('AI is typing...', 'kaichat'),
-                'error' => __('Sorry, something went wrong. Please try again.', 'kaichat'),
-                'networkError' => __('Network error. Please check your connection.', 'kaichat'),
-                'online' => __('Online', 'kaichat'),
-                'offline' => __('Offline', 'kaichat'),
+                'sendButton' => __('Send', 'kcg-ai-chatbot'),
+                'typing' => __('AI is typing...', 'kcg-ai-chatbot'),
+                'error' => __('Sorry, something went wrong. Please try again.', 'kcg-ai-chatbot'),
+                'networkError' => __('Network error. Please check your connection.', 'kcg-ai-chatbot'),
+                'online' => __('Online', 'kcg-ai-chatbot'),
+                'offline' => __('Offline', 'kcg-ai-chatbot'),
             )
         ));
     }

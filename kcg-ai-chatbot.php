@@ -11,7 +11,7 @@
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Update URI:        https://example.com/my-plugin/
- * Text Domain:       kaichat
+ * Text Domain:       kcg-ai-chatbot
  * Domain Path:       /languages
  */
 
@@ -90,12 +90,12 @@ class KCG_AI_Chatbot {
         register_activation_hook(__FILE__, array('KCG_AI_Chatbot_Activator', 'activate'));
         register_deactivation_hook(__FILE__, array('KCG_AI_Chatbot_Deactivator', 'deactivate'));
 
-        add_action('plugins_loaded', array($this, 'load_textdomain'));
+        // add_action('plugins_loaded', array($this, 'load_textdomain'));
     }
 
-    public function load_textdomain() {
-        load_plugin_textdomain('kaichat', false, dirname(plugin_basename(__FILE__)) . '/languages');
-    }
+    // public function load_textdomain() {
+    //     load_plugin_textdomain('kcg-ai-chatbot', false, dirname(plugin_basename(__FILE__)) . '/languages');
+    // }
 }
 
 function kcg_ai_chatbot() {

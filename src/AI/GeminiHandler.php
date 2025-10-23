@@ -192,7 +192,7 @@ class KCG_AI_Gemini_Handler {
     private function build_system_prompt($context = '') {
         $site_name = get_bloginfo('name');
         $site_description = get_bloginfo('description');
-        $custom_instructions = get_option('kcg_ai_chatbot_instructions', '');
+        $custom_instructions = wp_strip_all_tags(get_option('kcg_ai_chatbot_instructions', ''));
         
         $prompt = "You are a helpful AI assistant for {$site_name}. ";
         
@@ -200,25 +200,36 @@ class KCG_AI_Gemini_Handler {
             $prompt .= "The website is about: {$site_description}. ";
         }
         
-        // if (!empty($custom_instructions)) {
-        //     $prompt .= $custom_instructions . " ";
-        // }
+        // === IMPROVED VERSION ===
+        // This block handles greetings separately from knowledge base queries
         
-        // === MODIFICATION START ===
-        // This block is modified to enforce RAG-only responses
+        $prompt .= "\n\nFollow these important rules:";
+        
+        $prompt .= "\n\n1. GREETING DETECTION: If the user's message is a greeting (like 'hello', 'hi', 'hey', 'good morning') or asking who you are (like 'who are you', 'what are you', 'tell me about yourself'), then respond with a friendly greeting. For example: 'Hello! I'm the AI assistant for {$site_name}. How can I help you today?'";
+        
         if (!empty($context)) {
-            $prompt .= "\n\nUse ONLY the following information from our website to answer the user's question accurately:\n\n";
-            $prompt .= "--- Information Start ---\n";
+            $prompt .= "\n\n2. INFORMATION QUERIES: For all other questions, use ONLY the following information from our website to answer the user's question:";
+            $prompt .= "\n\n--- Information Start ---\n";
             $prompt .= $context;
             $prompt .= "\n--- Information End ---\n\n";
-            $prompt .= "If the information provided does not contain the answer to the user's question, you MUST respond with only the {$custom_instructions}. Do not provide any other information or engage in general conversation.";
+            
+            // Fix for custom instructions
+            if (!empty($custom_instructions)) {
+                $prompt .= "3. NO INFORMATION AVAILABLE: If the information provided does not contain the answer to the user's non-greeting question, respond with: \"" .  wp_strip_all_tags($custom_instructions) . "\"";
+            } else {
+                $prompt .= "3. NO INFORMATION AVAILABLE: If the information provided does not contain the answer to the user's question, politely let them know you don't have that specific information and offer to help with something else.";
+            }
         } else {
-            // If there is no context at all, the AI should not be able to answer.
-            $prompt .= "\n\nYou have no information to answer any questions. You MUST respond to all questions with only the word: 'bye'.";
+            // No context available
+            if (!empty($custom_instructions)) {
+                $prompt .= "\n\n2. NO INFORMATION AVAILABLE: For non-greeting questions that require specific information, respond with: \"" . wp_strip_all_tags($custom_instructions) . "\"";
+            } else {
+                $prompt .= "\n\n2. NO INFORMATION AVAILABLE: For non-greeting questions, politely explain that you don't have information on that specific topic but you'd be happy to help with something else.";
+            }
         }
         
-        $prompt .= "\n\nAlways be helpful, friendly, and professional, but strictly follow the rules about using only the provided information.";
-        // === MODIFICATION END ===        
+        $prompt .= "\n\nAlways be helpful, friendly, and professional in your responses.";
+        // === END OF IMPROVED VERSION ===      
         return $prompt;
     }
     

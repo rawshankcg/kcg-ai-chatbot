@@ -19,8 +19,8 @@ class KCG_AI_Chatbot_Menu {
 
     public function add_menu() {
         add_menu_page(
-            __('KCG AI Chatbot', 'kaichat'),
-            __('KCG Chatbot', 'kaichat'),
+            __('KCG AI Chatbot', 'kcg-ai-chatbot'),
+            __('KCG Chatbot', 'kcg-ai-chatbot'),
             'manage_options',
             'kcg-ai-chatbot',
             array($this, 'render_main_page'),
@@ -33,20 +33,20 @@ class KCG_AI_Chatbot_Menu {
         $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'settings';
         ?>
         <div class="wrap">
-            <h1><?php _e('KCG AI Chatbot', 'kaichat'); ?></h1>
+            <h1><?php esc_html_e('KCG AI Chatbot', 'kcg-ai-chatbot'); ?></h1>
             
             <h2 class="nav-tab-wrapper">
                 <a href="?page=kcg-ai-chatbot&tab=settings" class="nav-tab <?php echo $active_tab === 'settings' ? 'nav-tab-active' : ''; ?>">
-                    <?php _e('Settings', 'kaichat'); ?>
+                    <?php esc_html_e('Settings', 'kcg-ai-chatbot'); ?>
                 </a>
                 <a href="?page=kcg-ai-chatbot&tab=knowledge" class="nav-tab <?php echo $active_tab === 'knowledge' ? 'nav-tab-active' : ''; ?>">
-                    <?php _e('Knowledge Base', 'kaichat'); ?>
+                    <?php esc_html_e('Knowledge Base', 'kcg-ai-chatbot'); ?>
                 </a>
                 <a href="?page=kcg-ai-chatbot&tab=conversations" class="nav-tab <?php echo $active_tab === 'conversations' ? 'nav-tab-active' : ''; ?>">
-                    <?php _e('Conversations', 'kaichat'); ?>
+                    <?php esc_html_e('Conversations', 'kcg-ai-chatbot'); ?>
                 </a>
                 <a href="?page=kcg-ai-chatbot&tab=design" class="nav-tab <?php echo $active_tab === 'design' ? 'nav-tab-active' : ''; ?>">
-                    <?php _e('Chatbot Design', 'kaichat'); ?>
+                    <?php esc_html_e('Chatbot Design', 'kcg-ai-chatbot'); ?>
                 </a>
             </h2>
 

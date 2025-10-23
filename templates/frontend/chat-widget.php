@@ -15,7 +15,7 @@ $icon_url = get_option('kcg_ai_chatbot_button_icon', '');
     <div id="kcg-chatbot-button" class="kcg-chatbot-button">
         <?php
         if ($icon_url) : ?>
-            <img src="<?php echo esc_url($icon_url); ?>" alt="<?php esc_attr_e('Chat Button Icon', 'kaichat'); ?>" />
+            <img src="<?php echo esc_url($icon_url); ?>" alt="<?php esc_attr_e('Chat Button Icon', 'kcg-ai-chatbot'); ?>" />
         <?php else :
         ?>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -33,7 +33,7 @@ $icon_url = get_option('kcg_ai_chatbot_button_icon', '');
                 <div class="kcg-chatbot-avatar">
                     <?php 
                     if ($avatar_url) : ?>
-                        <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php esc_attr_e('Assistant Avatar', 'kaichat'); ?>" />
+                        <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php esc_attr_e('Assistant Avatar', 'kcg-ai-chatbot'); ?>" />
                     <?php else :
                     ?>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -45,14 +45,14 @@ $icon_url = get_option('kcg_ai_chatbot_button_icon', '');
                     <?php endif; ?>
                 </div>
                 <div class="kcg-chatbot-title">
-                    <h3><?php _e('AI Assistant', 'kaichat'); ?></h3>
+                    <h3><?php esc_html_e('AI Assistant', 'kcg-ai-chatbot'); ?></h3>
                     <span class="kcg-chatbot-status">
                         <span class="kcg-status-dot"></span>
-                        <?php _e('Online', 'kaichat'); ?>
+                        <?php esc_html_e('Online', 'kcg-ai-chatbot'); ?>
                     </span>
                 </div>
             </div>
-            <button id="kcg-chatbot-close" class="kcg-chatbot-close" aria-label="<?php esc_attr_e('Close chat', 'kaichat'); ?>">
+            <button id="kcg-chatbot-close" class="kcg-chatbot-close" aria-label="<?php esc_attr_e('Close chat', 'kcg-ai-chatbot'); ?>">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -67,7 +67,7 @@ $icon_url = get_option('kcg_ai_chatbot_button_icon', '');
                 <div class="kcg-message-avatar">
                     <?php 
                     if ($avatar_url) : ?>
-                        <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php esc_attr_e('Assistant Avatar', 'kaichat'); ?>" />
+                        <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php esc_attr_e('Assistant Avatar', 'kcg-ai-chatbot'); ?>" />
                     <?php else :
                     ?>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -83,7 +83,7 @@ $icon_url = get_option('kcg_ai_chatbot_button_icon', '');
                         <?php echo esc_html($welcome_message); ?>
                     </div>
                     <div class="kcg-message-time">
-                        <?php echo current_time('g:i A'); ?>
+                        <?php echo esc_html(current_time('g:i A')); ?>
                     </div>
                 </div>
             </div>
@@ -98,7 +98,7 @@ $icon_url = get_option('kcg_ai_chatbot_button_icon', '');
                 <span></span>
                 <span></span>
             </div>
-            <span class="kcg-typing-text"><?php _e('AI is typing...', 'kaichat'); ?></span>
+            <span class="kcg-typing-text"><?php esc_html_e('AI is typing...', 'kcg-ai-chatbot'); ?></span>
         </div>
         
         <!-- Chat Input Area -->
@@ -108,7 +108,7 @@ $icon_url = get_option('kcg_ai_chatbot_button_icon', '');
                     <textarea 
                         id="kcg-chatbot-input" 
                         class="kcg-chatbot-input" 
-                        placeholder="<?php esc_attr_e('Type your message...', 'kaichat'); ?>"
+                        placeholder="<?php esc_attr_e('Type your message...', 'kcg-ai-chatbot'); ?>"
                         rows="1"
                         maxlength="500"
                     ></textarea>
@@ -116,7 +116,7 @@ $icon_url = get_option('kcg_ai_chatbot_button_icon', '');
                         type="submit" 
                         id="kcg-chatbot-send" 
                         class="kcg-chatbot-send-btn"
-                        aria-label="<?php esc_attr_e('Send message', 'kaichat'); ?>"
+                        aria-label="<?php esc_attr_e('Send message', 'kcg-ai-chatbot'); ?>"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -126,7 +126,7 @@ $icon_url = get_option('kcg_ai_chatbot_button_icon', '');
                 </div>
                 <div class="kcg-input-footer">
                     <span class="kcg-powered-by">
-                        <?php _e('Powered by KCG AI', 'kaichat'); ?>
+                        <?php esc_html_e('Powered by KCG AI', 'kcg-ai-chatbot'); ?>
                     </span>
                 </div>
             </form>
@@ -160,7 +160,7 @@ $icon_url = get_option('kcg_ai_chatbot_button_icon', '');
         <div class="kcg-message-avatar">
             <?php 
             if ($avatar_url) : ?>
-                <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php esc_attr_e('Assistant Avatar', 'kaichat'); ?>" />
+                <img src="<?php echo esc_url($avatar_url); ?>" alt="<?php esc_attr_e('Assistant Avatar', 'kcg-ai-chatbot'); ?>" />
             <?php else :
             ?>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

@@ -135,7 +135,11 @@ class KCG_AI_Ajax_Handlers {
         }
         
         wp_send_json_success(array(
-            'message' => sprintf(__('Session deleted successfully. %d messages removed.', 'kaichat'), $deleted),
+            'message' => sprintf(
+                /* translators: %d: Number of messages that were deleted */
+                __('Session deleted successfully. %d messages removed.', 'kcg-ai-chatbot'),
+                $deleted
+            ),
             'deleted_count' => $deleted
         ));
     }
