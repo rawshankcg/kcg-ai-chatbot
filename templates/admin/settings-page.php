@@ -312,4 +312,13 @@ $token_status_color = $token_percentage >= 90 ? '#dc3232' : ($token_percentage >
         </button>
         <span id="test-result" style="margin-left: 10px;"></span>
     </p>
+    <hr>
+    <h2><?php esc_html_e('Cache Management', 'kcg-ai-chatbot'); ?></h2>
+    <p><?php esc_html_e('Clear all cached data including vector embeddings, indexed post counts, and CSS files.', 'kcg-ai-chatbot'); ?></p>
+    <p>
+        <button type="button" class="button button-secondary" id="clear-plugin-cache">
+            <?php esc_html_e('Clear Plugin Cache', 'kcg-ai-chatbot'); ?>
+        </button>
+        <span id="clear-cache-result" style="margin-left: 10px;"></span>
+    </p>
 </div>

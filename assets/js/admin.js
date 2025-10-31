@@ -101,6 +101,34 @@
       });
     });
 
+    // Clear cache handler
+    $('#clear-plugin-cache').on('click', function () {
+      var button = $(this);
+      var resultSpan = $('#clear-cache-result');
+
+      button.prop('disabled', true);
+      resultSpan.html('<span style="color: #666;">' + (kcgAiChatbotAdmin.strings.clearingCache || 'Clearing cache...') + '</span>');
+
+      $.post(kcgAiChatbotAdmin.ajaxUrl, {
+        action: 'kcg_clear_cache',
+        nonce: kcgAiChatbotAdmin.nonce
+      }, function (response) {
+        button.prop('disabled', false);
+        if (response.success) {
+          resultSpan.html('<span style="color: green;">✓ ' + response.data + '</span>');
+        } else {
+          resultSpan.html('<span style="color: red;">✗ ' + response.data + '</span>');
+        }
+
+        setTimeout(function () {
+          resultSpan.fadeOut();
+        }, 3000);
+      }).fail(function () {
+        button.prop('disabled', false);
+        resultSpan.html('<span style="color: red;">✗ An error occurred.</span>');
+      });
+    });
+
     // Bulk processing handlers
     $('.kcg-process-all-posts').on('click', function (e) {
       e.preventDefault();

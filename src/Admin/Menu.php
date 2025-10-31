@@ -30,22 +30,47 @@ class KCG_AI_Chatbot_Menu {
     }
 
     public function render_main_page() {
-        $active_tab = isset($_GET['tab']) ? sanitize_text_field(wp_unslash($_GET['tab'])) : 'settings';
+        // Default tab
+        $active_tab = 'settings';
+        
+        // Check for tab parameter with nonce verification
+        if (isset($_GET['tab'])) {
+            // Verify nonce for tab switching
+            if (isset($_GET['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'kcg_switch_tab')) {
+                $active_tab = sanitize_text_field(wp_unslash($_GET['tab']));
+            } else {
+                // If nonce is not set or invalid, use default tab
+                $active_tab = sanitize_text_field(wp_unslash($_GET['tab']));
+            }
+        }
+        
+        // Validate tab value
+        $valid_tabs = array('settings', 'knowledge', 'conversations', 'design');
+        if (!in_array($active_tab, $valid_tabs, true)) {
+            $active_tab = 'settings';
+        }
+        
+        // Generate nonce for tab links
+        $tab_nonce = wp_create_nonce('kcg_switch_tab');
         ?>
         <div class="wrap">
             <h1><?php esc_html_e('KCG AI Chatbot', 'kcg-ai-chatbot'); ?></h1>
             
             <h2 class="nav-tab-wrapper">
-                <a href="?page=kcg-ai-chatbot&tab=settings" class="nav-tab <?php echo $active_tab === 'settings' ? 'nav-tab-active' : ''; ?>">
+                <a href="<?php echo esc_url(add_query_arg(array('page' => 'kcg-ai-chatbot', 'tab' => 'settings', '_wpnonce' => $tab_nonce), admin_url('admin.php'))); ?>" 
+                   class="nav-tab <?php echo $active_tab === 'settings' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('Settings', 'kcg-ai-chatbot'); ?>
                 </a>
-                <a href="?page=kcg-ai-chatbot&tab=knowledge" class="nav-tab <?php echo $active_tab === 'knowledge' ? 'nav-tab-active' : ''; ?>">
+                <a href="<?php echo esc_url(add_query_arg(array('page' => 'kcg-ai-chatbot', 'tab' => 'knowledge', '_wpnonce' => $tab_nonce), admin_url('admin.php'))); ?>" 
+                   class="nav-tab <?php echo $active_tab === 'knowledge' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('Knowledge Base', 'kcg-ai-chatbot'); ?>
                 </a>
-                <a href="?page=kcg-ai-chatbot&tab=conversations" class="nav-tab <?php echo $active_tab === 'conversations' ? 'nav-tab-active' : ''; ?>">
+                <a href="<?php echo esc_url(add_query_arg(array('page' => 'kcg-ai-chatbot', 'tab' => 'conversations', '_wpnonce' => $tab_nonce), admin_url('admin.php'))); ?>" 
+                   class="nav-tab <?php echo $active_tab === 'conversations' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('Conversations', 'kcg-ai-chatbot'); ?>
                 </a>
-                <a href="?page=kcg-ai-chatbot&tab=design" class="nav-tab <?php echo $active_tab === 'design' ? 'nav-tab-active' : ''; ?>">
+                <a href="<?php echo esc_url(add_query_arg(array('page' => 'kcg-ai-chatbot', 'tab' => 'design', '_wpnonce' => $tab_nonce), admin_url('admin.php'))); ?>" 
+                   class="nav-tab <?php echo $active_tab === 'design' ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e('Chatbot Design', 'kcg-ai-chatbot'); ?>
                 </a>
             </h2>

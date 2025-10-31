@@ -13,13 +13,13 @@ if (isset($_GET['paged']) && check_admin_referer('kcg_conversations_page', 'conv
 }
 $offset = ($current_page - 1) * $per_page;
 
-// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe, defined by the class 
-$total_sessions = $wpdb->get_var("SELECT COUNT(DISTINCT session_id) FROM $table_name");
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table query, table name is prefixed and sanitized
+$total_sessions = $wpdb->get_var("SELECT COUNT(DISTINCT session_id) FROM {$table_name}");
 $total_pages = ceil($total_sessions / $per_page);
 
-// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe, defined by the class
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table query with pagination, table name is prefixed and sanitized
 $session_ids = $wpdb->get_col($wpdb->prepare(
-    "SELECT DISTINCT session_id FROM $table_name ORDER BY session_id DESC LIMIT %d OFFSET %d",
+    "SELECT DISTINCT session_id FROM {$table_name} ORDER BY session_id DESC LIMIT %d OFFSET %d",
     $per_page,
     $offset
 ));
@@ -28,10 +28,14 @@ $session_ids = $wpdb->get_col($wpdb->prepare(
 $conversations = [];
 if (!empty($session_ids)) {
     $session_ids_placeholder = implode(', ', array_fill(0, count($session_ids), '%s'));
-    // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe, defined by the class
+    
+    // Build the query properly
+    $query = "SELECT * FROM {$table_name} WHERE session_id IN ($session_ids_placeholder) ORDER BY session_id DESC, created_at ASC";
+    
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table query with dynamic placeholders, table name is prefixed and sanitized
     $conversations = $wpdb->get_results($wpdb->prepare(
-        "SELECT * FROM $table_name WHERE session_id IN ($session_ids_placeholder) ORDER BY session_id DESC, created_at ASC",
-        ...$session_ids
+        $query,
+        $session_ids
     ));
 }
 
@@ -43,6 +47,7 @@ foreach ($conversations as $conversation) {
 
 if (isset($_GET['action']) && sanitize_text_field(wp_unslash($_GET['action'])) === 'delete' && isset($_GET['id'])) {
     check_admin_referer('delete_conversation_' . sanitize_text_field(wp_unslash($_GET['id'])) );
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table delete operation
     $wpdb->delete($table_name, array('id' => intval(wp_unslash($_GET['id']))), array('%d'));
     echo '<div class="notice notice-success"><p>' . esc_html__('Conversation entry deleted successfully!', 'kcg-ai-chatbot') . '</p></div>';
 }

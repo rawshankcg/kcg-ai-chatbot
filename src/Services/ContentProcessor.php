@@ -15,11 +15,25 @@ class KCG_AI_Content_Processor {
     }
 
     /**
-     * Process all pages
+     * Clear all plugin-related caches
      */
+    private function clear_plugin_caches() {
+        // Clear object cache for vectors
+        wp_cache_delete('kcg_total_vectors', 'kcg_ai_chatbot');
+        wp_cache_delete('kcg_total_posts_indexed', 'kcg_ai_chatbot');
+        
+        // Clear all indexed posts cache (they use MD5 hashes, so we need to clear the group)
+        wp_cache_flush_group('kcg_ai_chatbot');
+        
+        // Clear WordPress general cache
+        if (function_exists('wp_cache_flush')) {
+            wp_cache_flush();
+        }
+    }
+
     /**
- * Process all posts of given post types
- */
+     * Process all posts of given post types
+     */
     public function process_all_posts($post_types = ['post', 'page']) {
         $results = [
             'total_posts' => 0,
@@ -49,6 +63,9 @@ class KCG_AI_Content_Processor {
                 }
             }
         }
+        
+        // Clear caches after bulk processing
+        $this->clear_plugin_caches();
         
         return $results;
     }
@@ -111,6 +128,9 @@ class KCG_AI_Content_Processor {
                 $error_count++;
             }
         }
+        
+        // Clear caches after processing
+        $this->clear_plugin_caches();
         
         if ($error_count > 0 && $success_count === 0) {
             return new WP_Error('processing_failed', 'Could not process any chunks for the post.');
@@ -194,6 +214,9 @@ class KCG_AI_Content_Processor {
         if ($deleted_count === false) {
             return new WP_Error('unindex_failed', 'Failed to remove vectors from database');
         }
+        
+        // Clear caches after unindexing
+        $this->clear_plugin_caches();
         
         return [
             'success' => true,

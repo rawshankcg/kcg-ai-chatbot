@@ -11,6 +11,7 @@ class KCG_AI_Ajax_Handlers {
         add_action('wp_ajax_kcg_test_gemini_connection', array($this, 'test_gemini_connection'));
         add_action('wp_ajax_kcg_unindex_single_post', array($this, 'unindex_single_post'));
         add_action('wp_ajax_kcg_delete_session', array($this, 'delete_session'));
+        add_action('wp_ajax_kcg_clear_cache', array($this, 'clear_cache'));
     }
 
 
@@ -142,6 +143,38 @@ class KCG_AI_Ajax_Handlers {
             ),
             'deleted_count' => $deleted
         ));
+    }
+    
+    /**
+     * Clear all plugin caches
+     */
+    public function clear_cache() {
+        check_ajax_referer('kcg_ai_chatbot_admin_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Permission denied');
+        }
+        
+        // Clear WordPress object cache
+        wp_cache_flush();
+        
+        // Clear plugin-specific caches
+        wp_cache_delete('kcg_total_vectors', 'kcg_ai_chatbot');
+        wp_cache_delete('kcg_total_posts_indexed', 'kcg_ai_chatbot');
+        wp_cache_flush_group('kcg_ai_chatbot');
+        
+        // Clear all transients
+        global $wpdb;
+        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_kcg_%'");
+        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_kcg_%'");
+        
+        // Clear popular caching plugins
+        do_action('litespeed_purge_all');
+        do_action('w3tc_flush_all');
+        do_action('wp_cache_clear_cache');
+        do_action('rocket_clean_domain');
+        
+        wp_send_json_success(__('Cache cleared successfully!', 'kcg-ai-chatbot'));
     }
 }
 

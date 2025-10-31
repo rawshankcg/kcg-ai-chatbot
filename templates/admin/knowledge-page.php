@@ -112,6 +112,7 @@ if ($query->have_posts()) {
                             printf(
                                 '<button type="button" class="button button-primary kcg-process-all-posts" data-post-types=\'["%s"]\'>%s</button>',
                                 esc_attr($post_type_obj->name),
+                                // Translators: %s: Custom post type label
                                 sprintf(esc_html__('Index All %s', 'kcg-ai-chatbot'), esc_html($post_type_obj->labels->name))
                             );
                         }
@@ -214,6 +215,7 @@ if ($query->have_posts()) {
             <div class="tablenav-pages kcg-pagination">
                 <span class="displaying-num">
                     <?php
+                        // Translators: %s: Number of items
                         printf(_n('%s item', '%s items', $total_items, 'kcg-ai-chatbot'), number_format_i18n($total_items)); 
                     ?>
                 </span>

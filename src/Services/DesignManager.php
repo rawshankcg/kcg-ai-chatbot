@@ -11,6 +11,9 @@ class KCG_AI_Chatbot_Design_Manager {
     public static function init() {
         // Add AJAX handler to update CSS
         add_action('wp_ajax_kcg_update_chatbot_css', array(__CLASS__, 'handle_css_update'));
+        
+        // Clear cache when CSS version is updated
+        add_action('update_option_kcg_ai_chatbot_css_version', array(__CLASS__, 'clear_css_caches_on_update'), 10, 2);
     }
     
     /**
@@ -115,8 +118,44 @@ class KCG_AI_Chatbot_Design_Manager {
         }
         
         // Update version
-        update_option('kcg_ai_chatbot_css_version', time());
+        $new_version = time();
+        update_option('kcg_ai_chatbot_css_version', $new_version);
+        
+        // Clear any CSS caches
+        self::clear_css_caches();
         
         return true;
     }
+    
+    /**
+     * Clear CSS-related caches
+     */
+    private static function clear_css_caches() {
+        // Clear WordPress object cache
+        wp_cache_delete('kcg_ai_chatbot_css_version', 'options');
+        
+        // If using a caching plugin, clear its cache
+        if (function_exists('wp_cache_flush')) {
+            wp_cache_flush();
+        }
+        
+        // Clear transients if any
+        delete_transient('kcg_ai_chatbot_css');
+        
+        // Clear popular caching plugins
+        do_action('litespeed_purge_all');
+        do_action('w3tc_flush_all');
+        do_action('wp_cache_clear_cache');
+        do_action('rocket_clean_domain');
+    }
+    
+    /**
+     * Clear caches when CSS version is updated
+     */
+    public static function clear_css_caches_on_update($old_value, $new_value) {
+        self::clear_css_caches();
+    }
 }
+
+// Initialize the design manager
+KCG_AI_Chatbot_Design_Manager::init();
