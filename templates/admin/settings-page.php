@@ -13,17 +13,40 @@ if (isset($_POST['kcg_ai_chatbot_save_settings'])) {
     check_admin_referer('kcg_ai_chatbot_settings_action', 'kcg_ai_chatbot_settings_nonce');
     
     update_option('kcg_ai_chatbot_enabled', isset($_POST['kcg_ai_chatbot_enabled']) ? 1 : 0);
-    update_option('kcg_ai_chatbot_api_key', sanitize_text_field($_POST['kcg_ai_chatbot_api_key']));
-    update_option('kcg_ai_chatbot_model', sanitize_text_field($_POST['kcg_ai_chatbot_model']));
-    update_option('kcg_ai_chatbot_max_tokens', intval($_POST['kcg_ai_chatbot_max_tokens']));
-    update_option('kcg_ai_chatbot_temperature', floatval($_POST['kcg_ai_chatbot_temperature']));
-    update_option('kcg_ai_chatbot_welcome_message', sanitize_textarea_field($_POST['kcg_ai_chatbot_welcome_message']));
-    update_option('kcg_ai_chatbot_instructions', sanitize_textarea_field($_POST['kcg_ai_chatbot_instructions']));
+
+    if ( isset($_POST['kcg_ai_chatbot_api_key']) ) {
+        update_option('kcg_ai_chatbot_api_key', sanitize_text_field(wp_unslash($_POST['kcg_ai_chatbot_api_key'])));
+    }
+
+    if ( isset($_POST['kcg_ai_chatbot_model']) ) {
+        update_option('kcg_ai_chatbot_model', sanitize_text_field(wp_unslash($_POST['kcg_ai_chatbot_model'])));
+    }
     
+    if (isset($_POST['kcg_ai_chatbot_max_tokens'])) {
+        update_option('kcg_ai_chatbot_max_tokens', intval($_POST['kcg_ai_chatbot_max_tokens']));
+    }
+
+    if (isset($_POST['kcg_ai_chatbot_temperature'])) {
+        update_option('kcg_ai_chatbot_temperature', floatval($_POST['kcg_ai_chatbot_temperature']));
+    }
+
+    if (isset($_POST['kcg_ai_chatbot_welcome_message'])) {
+        $welcome_message = sanitize_textarea_field(wp_unslash($_POST['kcg_ai_chatbot_welcome_message']));
+        update_option('kcg_ai_chatbot_welcome_message', $welcome_message);
+    }
+
+    if (isset($_POST['kcg_ai_chatbot_instructions'])) {
+        $instructions = sanitize_textarea_field(wp_unslash($_POST['kcg_ai_chatbot_instructions']));
+        update_option('kcg_ai_chatbot_instructions', $instructions);
+    }
+
     // Knowledge Base Settings
     update_option('kcg_use_knowledge_base', isset($_POST['kcg_use_knowledge_base']) ? 1 : 0);
-    update_option('kcg_chunk_size', intval($_POST['kcg_chunk_size']));
-    
+
+    if (isset($_POST['kcg_chunk_size'])) {
+        update_option('kcg_chunk_size', intval($_POST['kcg_chunk_size']));
+    }
+
     // Display Settings
     update_option('kcg_show_on_homepage', isset($_POST['kcg_show_on_homepage']) ? 1 : 0);
     update_option('kcg_show_on_posts', isset($_POST['kcg_show_on_posts']) ? 1 : 0);
