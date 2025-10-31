@@ -3,18 +3,44 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Get statistics
 global $wpdb;
 $vector_table = $wpdb->prefix . 'kcg_ai_chatbot_vectors';
-$total_vectors = $wpdb->get_var("SELECT COUNT(*) FROM $vector_table");
-$total_posts_indexed = $wpdb->get_var("SELECT COUNT(DISTINCT source_id) FROM $vector_table WHERE source = 'post'");
+
+$cache_key_vectors = 'kcg_total_vectors';
+$total_vectors = wp_cache_get($cache_key_vectors, 'kcg_ai_chatbot');
+
+if (false === $total_vectors) {
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query with caching
+    $total_vectors = $wpdb->get_var("SELECT COUNT(*) FROM " . esc_sql($vector_table));
+    wp_cache_set($cache_key_vectors, $total_vectors, 'kcg_ai_chatbot', 300); // Cache for 5 minutes
+}
+
+$cache_key_posts = 'kcg_total_posts_indexed';
+$total_posts_indexed = wp_cache_get($cache_key_posts, 'kcg_ai_chatbot');
+
+if (false === $total_posts_indexed) {
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query with caching
+    $total_posts_indexed = $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(DISTINCT source_id) FROM " . esc_sql($vector_table) . " WHERE source = %s",
+        'post'
+    ));
+    wp_cache_set($cache_key_posts, $total_posts_indexed, 'kcg_ai_chatbot', 300); // Cache for 5 minutes
+}
 
 $post_types = get_post_types(['public' => true], 'objects');
 
 $per_page = 10;
-$current_page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+$current_page = 1;
+$selected_post_type = 'page';
+$search_query = '';
 
-$selected_post_type = isset($_GET['post_type']) ? sanitize_text_field($_GET['post_type']) : 'page';
+if (isset($_GET['kcg_filter_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['kcg_filter_nonce'])), 'kcg_filter_knowledge')) {
+    $current_page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+    $selected_post_type = isset($_GET['post_type']) ? sanitize_text_field(wp_unslash($_GET['post_type'])) : 'page';
+    if (!empty($_GET['s'])) {
+        $search_query = sanitize_text_field(wp_unslash($_GET['s']));
+    }
+}
 
 $args = [
     'post_type' => $selected_post_type,
@@ -25,8 +51,8 @@ $args = [
     'order' => 'DESC'
 ];
 
-if (!empty($_GET['s'])) {
-    $args['s'] = sanitize_text_field($_GET['s']);
+if (!empty($search_query)) {
+    $args['s'] = $search_query;
 }
 
 $query = new WP_Query($args);
@@ -36,18 +62,34 @@ $total_pages = $query->max_num_pages;
 $indexed_posts = [];
 if ($query->have_posts()) {
     $post_ids = wp_list_pluck($query->posts, 'ID');
-    $indexed_results = $wpdb->get_col($wpdb->prepare(
-        "SELECT DISTINCT source_id FROM $vector_table WHERE source = 'post' AND source_id IN (" .
-        implode(',', array_fill(0, count($post_ids), '%d')) . ")",
-        ...$post_ids
-    ));
+    
+    $cache_key_indexed = 'kcg_indexed_posts_' . md5(serialize($post_ids));
+    $indexed_results = wp_cache_get($cache_key_indexed, 'kcg_ai_chatbot');
+    
+    if (false === $indexed_results) {
+        $placeholders = implode(',', array_fill(0, count($post_ids), '%d'));
+        
+        $query_template = sprintf(
+            "SELECT DISTINCT source_id FROM %s WHERE source = %%s AND source_id IN (%s)",
+            esc_sql($vector_table),
+            $placeholders
+        );
+        
+        $prepare_args = array_merge(['post'], $post_ids);
+        
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query with caching
+        $indexed_results = $wpdb->get_col(
+            $wpdb->prepare($query_template, $prepare_args)
+        );
+        
+        wp_cache_set($cache_key_indexed, $indexed_results, 'kcg_ai_chatbot', 300); // Cache for 5 minutes
+    }
+    
     $indexed_posts = array_flip($indexed_results);
 }
 ?>
-
 <div class="wrap">
     <h1><?php esc_html_e('Knowledge Base Management', 'kcg-ai-chatbot'); ?></h1>
-
     <div class="kcg-stats-cards">
         <div class="kcg-stats-card">
             <div class="kcg-bulk-actions">
@@ -67,11 +109,9 @@ if ($query->have_posts()) {
                     $custom_post_types = get_post_types(['public' => true, '_builtin' => false], 'objects');
                     if (!empty($custom_post_types)) {
                         foreach ($custom_post_types as $post_type_obj) {
-                            /* translators: %s is the name of the post type */
                             printf(
                                 '<button type="button" class="button button-primary kcg-process-all-posts" data-post-types=\'["%s"]\'>%s</button>',
                                 esc_attr($post_type_obj->name),
-                                /* translators: %s is the name of the post type */
                                 sprintf(esc_html__('Index All %s', 'kcg-ai-chatbot'), esc_html($post_type_obj->labels->name))
                             );
                         }
@@ -87,18 +127,17 @@ if ($query->have_posts()) {
                 </div>
             </div>
         </div>
-
         <div class="kcg-stats-card">
             <h3 style="margin-top: 0;"><?php esc_html_e('All Indexed', 'kcg-ai-chatbot'); ?></h3>
             <p style="font-size: 24px; font-weight: bold; color: #764ba2;"><?php echo number_format($total_posts_indexed); ?> </p>
         </div>
-        
     </div>
-
+    
     <form method="get">
-        <input type="hidden" name="page" value="<?php echo esc_attr($_REQUEST['page']); ?>">
+        <input type="hidden" name="page" value="<?php echo esc_attr(isset($_REQUEST['page']) ? sanitize_text_field(wp_unslash($_REQUEST['page'])) : ''); ?>">
         <input type="hidden" name="tab" value="knowledge">
-
+        <?php wp_nonce_field('kcg_filter_knowledge', 'kcg_filter_nonce'); ?>
+        
         <div class="tablenav top">
             <div class="alignleft actions">
                 <select name="post_type" id="post_type">
@@ -108,7 +147,7 @@ if ($query->have_posts()) {
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <input type="search" name="s" value="<?php echo esc_attr($_GET['s'] ?? ''); ?>" placeholder="<?php esc_attr_e('Search posts...', 'kcg-ai-chatbot'); ?>">
+                <input type="search" name="s" value="<?php echo esc_attr($search_query); ?>" placeholder="<?php esc_attr_e('Search posts...', 'kcg-ai-chatbot'); ?>">
                 <input type="submit" class="button" value="<?php esc_html_e('Filter', 'kcg-ai-chatbot'); ?>">
             </div>
         </div>
@@ -168,15 +207,13 @@ if ($query->have_posts()) {
             <?php endif; ?>
         </tbody>
     </table>
-
     <?php wp_reset_postdata(); ?>
-
+    
     <?php if ($total_pages > 1): ?>
         <div class="tablenav bottom">
             <div class="tablenav-pages kcg-pagination">
                 <span class="displaying-num">
                     <?php
-                        /* translators: %s is the number of items */
                         printf(_n('%s item', '%s items', $total_items, 'kcg-ai-chatbot'), number_format_i18n($total_items)); 
                     ?>
                 </span>
